@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* ── Header ── */
+    .mesas-header {
+        @apply flex items-center justify-between mb-4 flex-wrap gap-3;
+    }
+    .mesas-title {
+        @apply text-xl sm:text-2xl font-bold text-gray-800;
+    }
+    .mesas-sub {
+        @apply text-sm text-gray-400 mt-0.5;
+    }
+    .mesas-btn-nueva {
+        @apply flex items-center gap-2 bg-purple-700 hover:bg-purple-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors;
+    }
+
+    /* ── Resumen badges ── */
+    .mesas-resumen {
+        @apply flex items-center gap-2 flex-wrap mb-5;
+    }
+    .mesas-badge-resumen {
+        @apply flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border;
+    }
+    .mesas-badge-resumen .dot {
+        @apply w-2 h-2 rounded-full;
+    }
+    .mesas-badge-resumen.libre {
+        @apply bg-green-50  border-green-200  text-green-700;
+    }
+    .mesas-badge-resumen.libre .dot {
+        @apply bg-green-500;
+    }
+    .mesas-badge-resumen.ocupada {
+        @apply bg-red-50    border-red-200    text-red-700;
+    }
+    .mesas-badge-resumen.ocupada .dot {
+        @apply bg-red-500;
+    }
+    .mesas-badge-resumen.reservada {
+        @apply bg-yellow-50 border-yellow-200 text-yellow-700;
+    }
+    .mesas-badge-resumen.reservada .dot {
+        @apply bg-yellow-500;
+    }
+
+    /* ── Grid responsive ── */
+    .mesas-grid {
+        @apply grid gap-4;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    /* ── Card ── */
+    .mesa-card {
+        @apply rounded-2xl border-2 p-4 flex flex-col gap-3 transition-all;
+    }
+    .mesa-card.libre {
+        @apply border-green-300  bg-green-50;
+    }
+    .mesa-card.ocupada {
+        @apply border-red-300    bg-red-50;
+    }
+    .mesa-card.reservada {
+        @apply border-yellow-300 bg-yellow-50;
+    }
+
+    /* ── Top de card ── */
+    .mesa-card-top {
+        @apply flex items-center justify-between;
+    }
+    .mesa-numero {
+        @apply text-2xl font-black;
+    }
+    .mesa-card.libre .mesa-numero {
+        @apply text-green-600;
+    }
+    .mesa-card.ocupada .mesa-numero {
+        @apply text-red-500;
+    }
+    .mesa-card.reservada .mesa-numero {
+        @apply text-yellow-600;
+    }
+
+    .mesa-estado-badge {
+        @apply text-xs font-bold px-2.5 py-1 rounded-full;
+    }
+    .mesa-card.libre .mesa-estado-badge {
+        @apply bg-green-100  text-green-700;
+    }
+    .mesa-card.ocupada .mesa-estado-badge {
+        @apply bg-red-100    text-red-700;
+    }
+    .mesa-card.reservada .mesa-estado-badge {
+        @apply bg-yellow-100 text-yellow-700;
+    }
+
+    /* ── Body ── */
+    .mesa-card-body {
+        @apply flex flex-col gap-1.5;
+    }
+    .mesa-info-row {
+        @apply flex items-center gap-2 text-xs text-gray-600;
+    }
+    .mesa-info-row i {
+        @apply text-gray-400 w-3.5 flex-shrink-0;
+    }
+
+    /* ── Lista de platos ── */
+    .mesa-platos-lista {
+        @apply mt-1 border-t border-gray-200 pt-2 space-y-1.5;
+    }
+    .mesa-plato-item {
+        @apply flex items-center justify-between gap-1;
+    }
+    .mesa-plato-info {
+        @apply flex items-center gap-1 flex-1 min-w-0;
+    }
+    .mesa-plato-qty {
+        @apply font-bold text-purple-700 text-xs flex-shrink-0;
+    }
+    .mesa-plato-nombre {
+        @apply text-gray-700 text-xs truncate;
+    }
+    .mesa-plato-obs {
+        @apply text-gray-400 text-xs italic truncate hidden sm:block;
+    }
+    .mesa-plato-btn {
+        @apply w-6 h-6 rounded-full bg-green-100 hover:bg-green-200 text-green-700
+               flex items-center justify-center flex-shrink-0 transition-colors text-xs;
+    }
+
+    /* ── Footer ── */
+    .mesa-card-footer {
+        @apply flex flex-col gap-2 mt-auto;
+    }
+    .mesa-btn-estado {
+        @apply w-full flex items-center justify-center gap-2 border border-gray-300
+               bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium
+               py-2 rounded-lg transition-colors;
+    }
+    .mesa-card-footer-row {
+        @apply flex gap-2;
+    }
+    .mesa-card-footer-row .btn-edit,
+    .mesa-card-footer-row .btn-delete {
+        @apply flex-1 justify-center text-xs py-1.5;
+    }
+
+    /* ── Empty state ── */
+    .mesas-empty {
+        @apply text-center py-16 text-gray-400;
+    }
+    .mesas-empty-icon {
+        @apply text-5xl mb-3;
+    }
+    .mesas-empty-title {
+        @apply text-lg font-semibold text-gray-600 mb-1;
+    }
+    .mesas-empty-sub {
+        @apply text-sm mb-4;
+    }
+
+    /* ── Modal overlay ── */
+    .mesas-modal-overlay {
+        @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4;
+    }
+    .mesas-modal {
+        @apply bg-white rounded-2xl shadow-2xl w-full max-w-sm;
+    }
+    .mesas-modal-header {
+        @apply flex items-center justify-between px-5 py-4 border-b border-gray-100;
+    }
+    .mesas-modal-title {
+        @apply font-semibold text-gray-800;
+    }
+    .mesas-modal-close {
+        @apply text-gray-400 hover:text-gray-600 transition-colors;
+    }
+    .mesas-modal-body {
+        @apply px-5 py-4 flex flex-col gap-4;
+    }
+    .mesas-form-label {
+        @apply block text-sm font-medium text-gray-600 mb-1.5;
+    }
+    .mesas-form-input {
+        @apply w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm
+               focus:outline-none focus:border-purple-400 bg-gray-50;
+    }
+    .mesas-modal-actions {
+        @apply flex gap-3 pt-2;
+    }
+    .mesas-btn-cancelar {
+        @apply flex-1 border border-gray-200 text-gray-600 text-sm font-medium
+               py-2.5 rounded-lg hover:bg-gray-50 transition-colors;
+    }
+    .mesas-btn-guardar {
+        @apply flex-1 flex items-center justify-center gap-2 bg-purple-700
+               hover:bg-purple-800 text-white text-sm font-semibold
+               py-2.5 rounded-lg transition-colors;
+    }
+
+    /* ── Opciones de estado ── */
+    .estado-opciones {
+        @apply grid grid-cols-3 gap-3;
+    }
+    .estado-opcion {
+        @apply flex flex-col items-center gap-2 p-3 rounded-xl border-2
+               border-gray-200 cursor-pointer transition-all;
+    }
+    .estado-opcion.selected,
+    .estado-opcion:hover {
+        @apply border-purple-400 bg-purple-50;
+    }
+    .estado-icon {
+        @apply text-xl;
+    }
+    .estado-nombre {
+        @apply text-xs font-bold text-gray-600;
+    }
+    .estado-opcion.libre .estado-icon {
+        @apply text-green-500;
+    }
+    .estado-opcion.ocupada .estado-icon {
+        @apply text-red-500;
+    }
+    .estado-opcion.reservada .estado-icon {
+        @apply text-yellow-500;
+    }
+
+    .mesa-btn-agregar-pedido {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        margin-top: 12px;
+        margin-bottom: 8px;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 10px;
+        background: #7e22ce;
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.15s ease;
+    }
+
+    .mesa-btn-agregar-pedido:hover {
+        background: #6b21a8;
+        color: #fff;
+    }
+
+    .mesa-btn-agregar-pedido i {
+        font-size: 0.8rem;
+    }
+
+    .mesa-btn-liberar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        margin-top: 6px;
+        padding: 8px 12px;
+        border: 1px solid #dc2626;
+        border-radius: 8px;
+        background: #fff;
+        color: #dc2626;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .mesa-btn-liberar:hover {
+        background: #fef2f2;
+    }
+    .mesa-plato-preparando {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* ── Responsive móvil ── */
+@media (max-width: 680px) {
+    .mesas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 0.75rem;
+    }
+    .mesa-card {
+        padding: 0.75rem;
+    }
+    .mesa-numero {
+        font-size: 1.25rem;
+    }
+    .mesa-btn-estado {
+        font-size: 0.7rem;
+        padding: 0.4rem;
+    }
+    .mesa-card-footer-row .btn-edit,
+    .mesa-card-footer-row .btn-delete {
+        font-size: 0.65rem;
+        padding: 0.35rem 0.5rem;
+    }
+}

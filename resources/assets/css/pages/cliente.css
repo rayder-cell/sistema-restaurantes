@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+/* ════════════════════════════════════════════
+   BASE
+════════════════════════════════════════════ */
+.cli-body {
+    @apply m-0 p-0 bg-white;
+    font-family: 'Inter', system-ui, sans-serif;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* ════════════════════════════════════════════
+   HEADER
+════════════════════════════════════════════ */
+.cli-header {
+    @apply sticky top-0 z-40 px-4 py-3;
+    background-color: #1A4731;
+}
+.cli-header-inner {
+    @apply flex items-center justify-between;
+}
+.cli-logo {
+    @apply text-white font-bold text-lg;
+}
+.cli-carrito-btn {
+    @apply relative text-sm font-semibold px-4 py-2 rounded-lg text-white transition-colors;
+    background-color: #7C5C1E;
+}
+.cli-carrito-btn:hover { background-color: #6A4F18; }
+.cli-carrito-count {
+    @apply absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white
+           text-xs flex items-center justify-center font-bold;
+}
+.cli-mesa-badge-sm {
+    @apply text-sm text-green-200 font-medium;
+}
+
+/* ════════════════════════════════════════════
+   HERO
+════════════════════════════════════════════ */
+.cli-hero {
+    @apply px-5 py-8;
+    background-color: #1A4731;
+}
+.cli-hero-content { @apply mb-4; }
+.cli-hero-title {
+    @apply text-white font-bold text-2xl leading-tight mb-3;
+}
+.cli-hero-desc {
+    @apply text-green-200 text-sm leading-relaxed;
+}
+.cli-mesa-badge {
+    @apply inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full;
+    background-color: #7C5C1E;
+    color: #FDE68A;
+}
+
+/* ════════════════════════════════════════════
+   CATEGORÍAS
+════════════════════════════════════════════ */
+.cli-cats-wrap {
+    @apply sticky top-14 z-30 bg-white border-b border-gray-100 overflow-x-auto;
+}
+.cli-cats {
+    @apply flex gap-2 px-4 py-3;
+    width: max-content;
+}
+.cli-cat-pill {
+    @apply text-sm font-medium px-4 py-1.5 rounded-full border border-gray-200
+           text-gray-600 whitespace-nowrap transition-colors;
+}
+.cli-cat-pill.active {
+    @apply text-white border-transparent;
+    background-color: #1A4731;
+}
+
+/* ════════════════════════════════════════════
+   PRODUCTOS
+════════════════════════════════════════════ */
+.cli-main { @apply px-4 py-4 space-y-6 pb-24; }
+
+.cli-cat-section { @apply space-y-4; }
+.cli-cat-titulo {
+    @apply text-lg font-bold text-gray-800 border-b border-gray-100 pb-2;
+}
+
+.cli-prod-card {
+    @apply bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm;
+}
+.cli-prod-card.agotado { @apply opacity-60; }
+
+.cli-prod-img-wrap {
+    @apply relative w-full overflow-hidden;
+    height: 200px;
+}
+.cli-prod-img {
+    @apply w-full h-full object-cover;
+}
+.cli-agotado-overlay {
+    @apply absolute inset-0 bg-black/50 flex items-center justify-center
+           text-white font-bold text-lg tracking-widest;
+}
+
+.cli-prod-info { @apply p-4; }
+.cli-prod-top  { @apply flex items-start justify-between gap-2 mb-2; }
+.cli-prod-nombre {
+    @apply font-bold text-gray-800 text-base leading-tight;
+}
+.cli-prod-precio {
+    @apply font-bold text-lg flex-shrink-0;
+    color: #1A4731;
+}
+.cli-prod-desc {
+    @apply text-gray-500 text-sm leading-relaxed mb-3;
+}
+.cli-btn-agregar {
+    @apply w-full text-white text-sm font-semibold py-2.5 rounded-xl transition-colors;
+    background-color: #7C5C1E;
+}
+.cli-btn-agregar:hover { background-color: #6A4F18; }
+.cli-btn-agotado {
+    @apply w-full text-gray-400 text-sm font-medium py-2.5 rounded-xl
+           bg-gray-100 cursor-not-allowed;
+}
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+.cli-footer {
+    @apply text-center py-8 px-4 bg-gray-50 border-t border-gray-100;
+}
+.cli-footer-logo {
+    @apply font-bold text-gray-800 text-lg mb-3;
+    color: #1A4731;
+}
+.cli-footer-links {
+    @apply flex items-center justify-center gap-4 mb-3;
+}
+.cli-footer-links a {
+    @apply text-sm text-gray-500 hover:text-gray-700;
+}
+.cli-footer-copy {
+    @apply text-xs text-gray-400;
+}
+
+/* ════════════════════════════════════════════
+   CARRITO DRAWER
+════════════════════════════════════════════ */
+.cli-carrito-overlay {
+    @apply fixed inset-0 bg-black/50 z-40;
+}
+.cli-carrito-drawer {
+    @apply fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50
+           transition-transform duration-300 shadow-2xl;
+    max-height: 85vh;
+    overflow-y: auto;
+    max-width: 480px;
+    margin: 0 auto;
+}
+.cli-carrito-header {
+    @apply flex items-center justify-between px-5 py-4 border-b border-gray-100;
+}
+.cli-carrito-title { @apply font-bold text-gray-800 text-lg; }
+.cli-carrito-close {
+    @apply text-gray-400 hover:text-gray-600 text-xl transition-colors;
+}
+.cli-carrito-empty {
+    @apply flex flex-col items-center py-8 text-gray-400 text-sm text-center gap-2;
+}
+.cli-carrito-items {
+    @apply px-5 py-3 space-y-3;
+    min-height: 80px;
+}
+.cli-carrito-item {
+    @apply flex items-center justify-between gap-3 py-2 border-b border-gray-50;
+}
+.cli-ci-info    { @apply flex-1 min-w-0; }
+.cli-ci-nombre  { @apply text-sm font-semibold text-gray-800 truncate; }
+.cli-ci-precio  { @apply text-xs font-bold mt-0.5; color: #1A4731; }
+.cli-ci-qty     { @apply flex items-center gap-2 flex-shrink-0; }
+.cli-qty-btn    {
+    @apply w-7 h-7 rounded-full border border-gray-300 text-gray-600
+           flex items-center justify-center text-sm font-bold hover:bg-gray-100;
+}
+.cli-qty-val    { @apply text-sm font-bold text-gray-800 w-4 text-center; }
+
+.cli-carrito-obs { @apply px-5 py-3 border-t border-gray-100; }
+.cli-obs-input  {
+    @apply w-full text-sm border border-gray-200 rounded-xl px-3 py-2
+           focus:outline-none focus:ring-2 resize-none;
+}
+
+.cli-carrito-totales {
+    @apply px-5 py-3 border-t border-gray-100 space-y-2;
+}
+.cli-total-row {
+    @apply flex justify-between text-sm text-gray-500;
+}
+.cli-total-final {
+    @apply flex justify-between font-bold text-base pt-2 border-t border-gray-100;
+}
+.cli-total-final span:last-child { color: #1A4731; font-size: 1.2rem; }
+
+.cli-carrito-acciones {
+    @apply flex gap-3 px-5 py-4;
+}
+.cli-btn-seguir {
+    @apply flex-1 text-sm font-medium text-gray-600 border border-gray-300
+           rounded-xl py-3 hover:bg-gray-50 transition-colors;
+}
+.cli-btn-confirmar {
+    @apply flex-1 text-white text-sm font-bold rounded-xl py-3 transition-colors;
+    background-color: #1A4731;
+}
+.cli-btn-confirmar:hover { background-color: #153B27; }
+
+/* ════════════════════════════════════════════
+   CONFIRMACIÓN
+════════════════════════════════════════════ */
+.cli-confirmacion {
+    @apply flex items-center justify-center min-h-screen px-4 py-8;
+    background-color: #f9fafb;
+}
+.cli-conf-card {
+    @apply bg-white rounded-3xl shadow-lg p-8 w-full text-center space-y-4;
+}
+.cli-conf-ico   { @apply text-5xl; }
+.cli-conf-title { @apply text-2xl font-bold text-gray-800; }
+.cli-conf-sub   { @apply text-gray-500 text-sm; }
+
+.cli-estado-badge {
+    @apply inline-block text-sm font-bold px-5 py-2.5 rounded-full;
+}
+.cli-estado-badge.pendiente      { @apply bg-yellow-100 text-yellow-700; }
+.cli-estado-badge.en_preparacion { @apply bg-blue-100 text-blue-700; }
+.cli-estado-badge.listo          { @apply bg-green-100 text-green-700; }
+.cli-estado-badge.entregado      { @apply bg-gray-100 text-gray-600; }
+.cli-estado-badge.pulse          { animation: pulse 1.5s infinite; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
+.cli-conf-detalles {
+    @apply text-left bg-gray-50 rounded-2xl p-4 space-y-2 mt-4;
+}
+.cli-conf-item {
+    @apply flex justify-between text-sm text-gray-600;
+}
+.cli-conf-total {
+    @apply flex justify-between font-bold text-gray-800 pt-2 border-t border-gray-200;
+}
+.cli-btn-volver {
+    @apply inline-block text-sm font-semibold px-6 py-3 rounded-xl text-white transition-colors;
+    background-color: #1A4731;
+}
+.cli-btn-volver:hover { background-color: #153B27; }
+
+} /* end @layer */

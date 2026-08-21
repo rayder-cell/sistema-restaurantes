@@ -1,0 +1,307 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* ── Encabezado ─────────────────────────────────── */
+    .menu-page-header {
+        @apply flex items-start justify-between mb-6;
+    }
+    .menu-page-title {
+        @apply text-2xl font-bold text-gray-800;
+    }
+    .menu-page-sub {
+        @apply text-gray-500 text-sm mt-1;
+    }
+    .menu-btn-agregar {
+        @apply flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors flex-shrink-0;
+        background-color: #4a1942;
+    }
+    .menu-btn-agregar:hover {
+        background-color: #3a1232;
+    }
+    .menu-btn-secondary {
+        @apply text-sm text-gray-600 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors;
+    }
+
+    /* ── Filtros por categoría ──────────────────────── */
+    .menu-filtros {
+        @apply flex items-center gap-2 flex-wrap mb-6;
+    }
+    .menu-filtro-btn {
+        @apply px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600
+           hover:border-purple-400 hover:text-purple-700 transition-colors;
+    }
+    .menu-filtro-btn.active {
+        @apply text-white border-transparent;
+        background-color: #4a1942;
+    }
+    .menu-filtro-btn-cat {
+        @apply px-4 py-1.5 rounded-full text-sm font-medium border border-dashed border-gray-300
+           text-gray-400 hover:border-purple-400 hover:text-purple-600 transition-colors ml-auto;
+    }
+
+    /* ── Grid de productos ──────────────────────────── */
+    .menu-grid {
+        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5;
+    }
+    .menu-card {
+        @apply bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm
+           hover:shadow-md transition-shadow;
+    }
+    .menu-card.agotado {
+        @apply opacity-75;
+    }
+
+    /* Imagen */
+    .menu-card-img-wrap {
+        @apply relative w-full overflow-hidden;
+        height: 180px;
+    }
+    .menu-card-img {
+        @apply w-full h-full object-cover;
+    }
+    .menu-card-img-placeholder {
+        @apply w-full h-full bg-gray-100 flex items-center justify-center text-5xl;
+    }
+    .menu-card-cat-badge {
+        @apply absolute top-2 right-2 text-white text-xs font-bold px-2 py-0.5 rounded;
+        background-color: rgba(74, 25, 66, 0.85);
+    }
+    .menu-card-agotado-overlay {
+        @apply absolute inset-0 flex items-center justify-center text-white text-base font-bold
+           tracking-widest rounded-none;
+        background-color: rgba(220, 38, 38, 0.75);
+    }
+
+    /* Body de la card */
+    .menu-card-body {
+        @apply p-4;
+    }
+    .menu-card-top {
+        @apply flex items-start justify-between gap-2 mb-1;
+    }
+    .menu-card-nombre {
+        @apply font-bold text-gray-800 text-sm leading-tight;
+    }
+    .menu-card-precio {
+        @apply text-sm font-bold flex-shrink-0;
+        color: #4a1942;
+    }
+    .menu-card-precio span {
+        @apply text-lg;
+    }
+    .menu-card-desc {
+        @apply text-gray-400 text-xs mt-1 mb-3;
+    }
+
+    /* Footer de la card */
+    .menu-card-footer {
+        @apply flex items-center justify-between mt-3 pt-3 border-t border-gray-100;
+    }
+    .menu-card-stock {
+        @apply flex items-center gap-2;
+    }
+    .menu-stock-label {
+        @apply text-xs text-gray-500;
+    }
+    .menu-card-actions {
+        @apply flex items-center gap-1;
+    }
+    .menu-action-btn {
+        @apply w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors;
+    }
+    .menu-action-btn.edit {
+        @apply text-gray-400 hover:bg-gray-100 hover:text-gray-700;
+    }
+    .menu-action-btn.delete {
+        @apply text-gray-400 hover:bg-red-50 hover:text-red-500;
+    }
+
+    /* Toggle switch */
+    .menu-toggle {
+        @apply relative inline-flex items-center cursor-pointer;
+    }
+    .menu-toggle input {
+        @apply sr-only;
+    }
+    .menu-toggle-slider {
+        @apply w-10 h-6 rounded-full transition-colors;
+        background-color: #d1d5db;
+    }
+    .menu-toggle input:checked + .menu-toggle-slider {
+        background-color: #4a1942;
+    }
+    .menu-toggle-slider::after {
+        content: "";
+        @apply absolute w-4 h-4 bg-white rounded-full shadow transition-transform;
+        top: 4px;
+        left: 4px;
+    }
+    .menu-toggle input:checked + .menu-toggle-slider::after {
+        transform: translateX(16px);
+    }
+
+    /* ── Empty state ────────────────────────────────── */
+    .menu-empty {
+        @apply flex flex-col items-center justify-center py-20 text-center;
+    }
+    .menu-empty-icon {
+        @apply text-6xl mb-4;
+    }
+    .menu-empty-title {
+        @apply text-gray-600 font-semibold text-lg;
+    }
+    .menu-empty-sub {
+        @apply text-gray-400 text-sm mt-1;
+    }
+
+    /* ── Modal ──────────────────────────────────────── */
+    .menu-modal-overlay {
+        @apply fixed inset-0 flex items-center justify-center z-50 px-4;
+        background: rgba(0, 0, 0, 0.6);
+    }
+    .menu-modal {
+        @apply bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-screen overflow-y-auto;
+    }
+    .menu-modal-header {
+        @apply flex items-start justify-between px-6 py-5 border-b border-gray-100;
+    }
+    .menu-modal-title {
+        @apply text-lg font-bold text-gray-800;
+    }
+    .menu-modal-sub {
+        @apply text-sm text-gray-500 mt-0.5;
+    }
+    .menu-modal-close {
+        @apply text-gray-400 hover:text-gray-600 transition-colors text-xl leading-none flex-shrink-0;
+    }
+    .menu-modal-body {
+        @apply px-6 py-5 space-y-4;
+    }
+
+    /* Upload area */
+    .menu-upload-area {
+        @apply border-2 border-dashed border-gray-200 rounded-xl overflow-hidden cursor-pointer
+           hover:border-purple-400 transition-colors;
+        min-height: 140px;
+    }
+    .menu-upload-placeholder {
+        @apply flex flex-col items-center justify-center py-8 text-center;
+    }
+    .menu-upload-icon {
+        @apply text-4xl text-purple-400 mb-2;
+    }
+    .menu-upload-hint {
+        @apply text-xs text-gray-400 mt-1;
+    }
+    .menu-upload-preview {
+        @apply relative;
+    }
+    .menu-preview-img {
+        @apply w-full object-cover rounded-xl;
+        max-height: 200px;
+    }
+    .menu-preview-remove {
+        @apply absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full text-xs
+           flex items-center justify-center hover:bg-red-600;
+    }
+
+    /* Form */
+    .menu-form-group {
+        @apply flex flex-col gap-1;
+    }
+    .menu-form-label {
+        @apply text-sm font-semibold text-gray-700;
+    }
+    .menu-form-input {
+        @apply border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none
+           focus:ring-2 focus:ring-purple-300 w-full bg-white;
+    }
+    .menu-form-row {
+        @apply grid grid-cols-2 gap-4;
+    }
+    .menu-precio-wrap {
+        @apply relative;
+    }
+    .menu-precio-prefix {
+        @apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium;
+    }
+    .menu-precio-input {
+        @apply pl-8;
+    }
+    .menu-form-disponible {
+        @apply flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3;
+    }
+    .menu-modal-actions {
+        @apply flex items-center justify-end gap-3 pt-2;
+    }
+    .menu-btn-cancelar {
+        @apply text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg transition-colors;
+    }
+    .menu-btn-guardar {
+        @apply text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors;
+        background-color: #4a1942;
+    }
+    .menu-btn-guardar:hover {
+        background-color: #3a1232;
+    }
+
+    /* ── Tabla de categorías ────────────────────────── */
+    .menu-cat-card {
+        @apply bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden;
+    }
+    .menu-cat-table {
+        @apply w-full text-sm;
+    }
+    .menu-cat-table thead tr {
+        @apply border-b border-gray-100;
+    }
+    .menu-cat-table thead th {
+        @apply px-5 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider;
+    }
+    .menu-cat-table tbody tr {
+        @apply border-b border-gray-50 hover:bg-gray-50 transition-colors;
+    }
+    .menu-cat-table tbody td {
+        @apply px-5 py-4;
+    }
+    .menu-cat-count {
+        @apply inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold;
+        background-color: #f3eeff;
+        color: #4a1942;
+    }
+
+    .menu-card-stock-row {
+        @apply flex items-center justify-between pt-3 mt-2 border-t border-gray-100;
+    }
+    .menu-card-actions-row {
+        @apply flex items-center gap-2 mt-3;
+    }
+    .menu-card-stock-row {
+        @apply flex items-center justify-between pt-3 mt-2 border-t border-gray-100;
+    }
+    .menu-card-actions-row {
+        @apply flex items-center gap-2 mt-3;
+    }
+    .menu-card-actions-row .btn-edit,
+    .menu-card-actions-row .btn-delete {
+        @apply flex-1 justify-center;
+    }
+    /* ── Tabs ── */
+    .menu-tabs-header {
+        @apply flex items-center justify-between mb-4;
+    }
+    .menu-tabs {
+        @apply flex gap-1 bg-gray-100 p-1 rounded-xl;
+    }
+    .menu-tab {
+        @apply flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium text-gray-500 transition-all;
+    }
+    .menu-tab.active {
+        @apply bg-white text-purple-700 shadow-sm;
+    }
+    .menu-tab-action {
+        @apply flex items-center;
+    }
+} /* end @layer */

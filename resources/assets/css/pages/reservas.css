@@ -1,0 +1,52 @@
+@layer components {
+    .reserva-stats-grid {
+        @apply grid grid-cols-2 lg:grid-cols-4 gap-4 mb-2;
+    }
+    .reserva-stat-card {
+        @apply bg-white border border-gray-200 rounded-xl p-4;
+    }
+    .reserva-stat-card.green {
+        @apply border-green-200 bg-green-50;
+    }
+    .reserva-stat-card.yellow {
+        @apply border-yellow-200 bg-yellow-50;
+    }
+    .reserva-stat-card.red {
+        @apply border-red-200 bg-red-50;
+    }
+    .reserva-stat-label {
+        @apply text-xs text-gray-500 uppercase tracking-wide;
+    }
+    .reserva-stat-value {
+        @apply text-3xl font-bold text-gray-800 mt-1;
+    }
+    .reserva-stat-card.green .reserva-stat-value {
+        @apply text-green-700;
+    }
+    .reserva-stat-card.yellow .reserva-stat-value {
+        @apply text-yellow-700;
+    }
+    .reserva-stat-card.red .reserva-stat-value {
+        @apply text-red-700;
+    }
+
+    .reserva-filtros {
+        @apply flex items-center gap-2 flex-wrap;
+    }
+
+    .reserva-estado-badge {
+        @apply text-xs px-2.5 py-1 rounded-full font-medium;
+    }
+    .estado-pendiente {
+        @apply bg-yellow-100 text-yellow-700;
+    }
+    .estado-confirmada {
+        @apply bg-green-100 text-green-700;
+    }
+    .estado-cancelada {
+        @apply bg-red-100 text-red-700;
+    }
+    .estado-completada {
+        @apply bg-blue-100 text-blue-700;
+    }
+}

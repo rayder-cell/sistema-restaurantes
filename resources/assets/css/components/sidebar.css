@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .sidebar {
+        @apply fixed top-0 left-0 h-full bg-purple-900 border-r border-purple-800 flex flex-col z-50;
+        width: 240px;
+    }
+    .sidebar-logo {
+        @apply flex items-center gap-2 px-4 py-3 border-b border-purple-800;
+    }
+    .sidebar-logo-text {
+        @apply text-white font-bold text-base;
+    }
+    .sidebar-user {
+        @apply px-4 py-2.5 border-b border-purple-800;
+    }
+    .sidebar-user-name {
+        @apply text-white font-semibold text-sm;
+    }
+    .sidebar-user-role {
+        @apply text-purple-300 text-xs mt-0.5;
+    }
+    .sidebar-nav {
+        @apply flex-1 overflow-y-auto py-2;
+    }
+    .sidebar-section {
+        @apply px-4 pt-3 pb-1 text-xs font-semibold text-purple-400 uppercase tracking-wider;
+    }
+    .sidebar-footer {
+        @apply px-4 py-3 border-t border-purple-800;
+    }
+    .nav-link {
+        @apply flex items-center gap-2.5 px-3 py-2 text-purple-300 hover:text-white hover:bg-purple-800 rounded-lg transition-colors text-sm;
+    }
+    .nav-link.active {
+        @apply text-white bg-purple-700 border-l-2 border-white;
+    }
+    .nav-section-label {
+        @apply px-3 pt-3 pb-1 text-xs font-semibold text-purple-400 uppercase tracking-wider;
+    }
+    .user-name {
+        @apply text-white font-semibold text-sm leading-tight;
+    }
+    .user-rol {
+        @apply text-purple-300 text-xs capitalize leading-tight;
+    }
+    .user-restaurante {
+        @apply text-purple-400 text-xs leading-tight;
+    }
+    .logout-btn {
+        @apply flex items-center gap-2.5 text-purple-300 hover:text-white transition-colors text-sm w-full;
+    }
+}
+
+/* ── Responsive móvil ── */
+@media (max-width: 640px) {
+    .sidebar {
+        width: 150px;
+    }
+    .sidebar-logo {
+        padding: 0.5rem 0.75rem;
+    }
+    .sidebar-logo-text {
+        font-size: 0.85rem;
+    }
+    .sidebar-user {
+        padding: 0.5rem 0.75rem;
+    }
+    .user-name {
+        font-size: 0.75rem;
+    }
+    .user-rol {
+        font-size: 0.65rem;
+    }
+    .user-restaurante {
+        display: none;
+    }
+    .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        gap: 0.5rem;
+    }
+    .nav-section-label {
+        font-size: 0.6rem;
+        padding: 0.5rem 0.6rem 0.25rem;
+    }
+    .sidebar-footer {
+        padding: 0.5rem 0.75rem;
+    }
+    .logout-btn {
+        font-size: 0.75rem;
+    }
+    .sidebar-nav {
+        padding: 0.25rem 0;
+    }
+}
+
+/* ── App content ajuste ── */
+@media (max-width: 640px) {
+    .app-content {
+        margin-left: 150px !important;
+    }
+}

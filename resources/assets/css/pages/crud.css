@@ -1,0 +1,425 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* Toolbar superior de página */
+    .page-toolbar {
+        @apply flex items-center justify-between mb-6;
+    }
+    .page-subtitle {
+        @apply text-gray-500 text-sm mt-0.5;
+    }
+    .btn-create {
+        @apply bg-purple-700 hover:bg-purple-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors;
+    }
+    .btn-back {
+        @apply text-purple-600 hover:text-purple-800 text-sm font-medium transition-colors;
+    }
+
+    /* Tabla */
+    .table-card {
+        @apply bg-white rounded-xl border border-gray-200 overflow-hidden;
+    }
+    .data-table {
+        @apply w-full text-sm;
+    }
+    .data-table thead tr {
+        @apply bg-gray-50 border-b border-gray-200;
+    }
+    .data-table th {
+        @apply px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider;
+    }
+    .data-table tbody tr {
+        @apply border-b border-gray-100 hover:bg-gray-50 transition-colors;
+    }
+    .data-table td {
+        @apply px-5 py-3.5 text-gray-800;
+    }
+    .td-secondary {
+        @apply text-gray-500 text-sm;
+    }
+    .td-empty {
+        @apply text-center text-gray-400 py-10;
+    }
+
+    /* Avatar usuario */
+    .user-cell {
+        @apply flex items-center gap-3;
+    }
+    .user-avatar {
+        @apply w-8 h-8 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center flex-shrink-0;
+    }
+    .user-cell-name {
+        @apply font-medium text-gray-800;
+    }
+
+    /* Badges de rol */
+    .role-badge {
+        @apply text-xs px-2.5 py-1 rounded-full font-medium;
+    }
+    .role-propietario {
+        @apply bg-purple-100 text-purple-700;
+    }
+    .role-administrador {
+        @apply bg-blue-100 text-blue-700;
+    }
+    .role-mesero {
+        @apply bg-green-100 text-green-700;
+    }
+    .role-cocinero {
+        @apply bg-orange-100 text-orange-700;
+    }
+    .role-cajero {
+        @apply bg-yellow-100 text-yellow-700;
+    }
+    .role-superadmin {
+        @apply bg-red-100 text-red-700;
+    }
+
+    /* Estado activo/inactivo */
+    .status-badge {
+        @apply text-xs px-2.5 py-1 rounded-full font-medium;
+    }
+    .status-active {
+        @apply bg-green-100 text-green-700;
+    }
+    .status-inactive {
+        @apply bg-gray-100 text-gray-500;
+    }
+
+    /* Botones de acción en tabla */
+    .action-buttons {
+        @apply flex items-center gap-2;
+    }
+    .btn-edit {
+        @apply text-xs px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors;
+    }
+    .btn-toggle {
+        @apply text-xs px-3 py-1.5 rounded-lg font-medium transition-colors;
+    }
+    .btn-activate {
+        @apply bg-green-100 hover:bg-green-200 text-green-700;
+    }
+    .btn-deactivate {
+        @apply bg-yellow-100 hover:bg-yellow-200 text-yellow-700;
+    }
+    .btn-delete {
+        @apply text-xs px-3 py-1.5 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 font-medium transition-colors;
+    }
+
+    /* Paginación */
+    .pagination-wrapper {
+        @apply px-5 py-4 border-t border-gray-100;
+    }
+
+    /* Formulario */
+    .form-card {
+        @apply bg-white rounded-xl border border-gray-200 p-8 max-w-3xl;
+    }
+    .form-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6;
+    }
+    .form-group {
+        @apply flex flex-col;
+    }
+    .form-label {
+        @apply block text-sm font-medium text-gray-600 mb-1.5;
+    }
+    .form-input {
+        @apply w-full border border-gray-200 text-gray-800 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-purple-400 bg-gray-50 placeholder-gray-400;
+    }
+    .input-error {
+        @apply border-red-400 bg-red-50;
+    }
+    .error-msg {
+        @apply text-red-500 text-xs mt-1;
+    }
+    .form-actions {
+        @apply flex items-center gap-3 pt-4 border-t border-gray-100;
+    }
+    .btn-submit {
+        @apply bg-purple-700 hover:bg-purple-800 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors;
+    }
+    .btn-cancel {
+        @apply text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors px-4 py-2.5;
+    }
+
+    /* Toggle checkbox */
+    .toggle-wrapper {
+        @apply flex items-center gap-3 mt-1;
+    }
+    .toggle-input {
+        @apply w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500;
+    }
+    .toggle-label {
+        @apply text-sm text-gray-700;
+    }
+
+    /* ── Reservas ── */
+    .reserva-stats-grid {
+        @apply grid grid-cols-2 lg:grid-cols-4 gap-4 mb-2;
+    }
+    .reserva-stat-card {
+        @apply bg-white border border-gray-200 rounded-xl p-4;
+    }
+    .reserva-stat-card.green {
+        @apply border-green-200 bg-green-50;
+    }
+    .reserva-stat-card.yellow {
+        @apply border-yellow-200 bg-yellow-50;
+    }
+    .reserva-stat-card.red {
+        @apply border-red-200 bg-red-50;
+    }
+    .reserva-stat-label {
+        @apply text-xs text-gray-500 uppercase tracking-wide;
+    }
+    .reserva-stat-value {
+        @apply text-3xl font-bold text-gray-800 mt-1;
+    }
+    .reserva-stat-card.green .reserva-stat-value {
+        @apply text-green-700;
+    }
+    .reserva-stat-card.yellow .reserva-stat-value {
+        @apply text-yellow-700;
+    }
+    .reserva-stat-card.red .reserva-stat-value {
+        @apply text-red-700;
+    }
+    .reserva-filtros {
+        @apply flex items-center gap-2 flex-wrap;
+    }
+    .reserva-estado-badge {
+        @apply text-xs px-2.5 py-1 rounded-full font-medium;
+    }
+    .estado-pendiente {
+        @apply bg-yellow-100 text-yellow-700;
+    }
+    .estado-confirmada {
+        @apply bg-green-100 text-green-700;
+    }
+    .estado-cancelada {
+        @apply bg-red-100 text-red-700;
+    }
+    .estado-completada {
+        @apply bg-blue-100 text-blue-700;
+    }
+
+    /* ── Caja ── */
+    .caja-stats-grid {
+        @apply grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
+    }
+    .caja-stat-card {
+        @apply bg-white border border-gray-200 rounded-xl p-4;
+    }
+    .caja-stat-card.purple {
+        @apply border-purple-200 bg-purple-50;
+    }
+    .caja-stat-card.green {
+        @apply border-green-200 bg-green-50;
+    }
+    .caja-stat-card.red {
+        @apply border-red-200 bg-red-50;
+    }
+    .caja-stat-card.blue {
+        @apply border-blue-200 bg-blue-50;
+    }
+    .caja-stat-label {
+        @apply text-xs text-gray-500 uppercase tracking-wide font-semibold;
+    }
+    .caja-stat-value {
+        @apply text-2xl font-bold text-gray-800 mt-1;
+    }
+    .caja-stat-card.purple .caja-stat-value {
+        @apply text-purple-700;
+    }
+    .caja-stat-card.green .caja-stat-value {
+        @apply text-green-700;
+    }
+    .caja-stat-card.red .caja-stat-value {
+        @apply text-red-700;
+    }
+    .caja-stat-card.blue .caja-stat-value {
+        @apply text-blue-700;
+    }
+
+    .caja-apertura-banner {
+        @apply flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-xl px-6 py-4 mb-6;
+    }
+    .caja-apertura-banner.green {
+        @apply bg-green-50 border-green-200;
+    }
+
+    .caja-layout {
+        @apply grid grid-cols-1 lg:grid-cols-3 gap-4;
+    }
+    .caja-panel-left {
+        @apply bg-white border border-gray-200 rounded-xl overflow-hidden;
+    }
+    .caja-panel-center {
+        @apply bg-white border border-gray-200 rounded-xl overflow-hidden;
+    }
+    .caja-panel-right {
+        @apply bg-white border border-gray-200 rounded-xl overflow-hidden;
+    }
+    .caja-panel-header {
+        @apply flex items-center justify-between px-5 py-4 border-b border-gray-100;
+    }
+    .caja-panel-title {
+        @apply font-semibold text-gray-800;
+    }
+    .caja-badge-pending {
+        @apply text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-semibold;
+    }
+    .caja-mesa-item {
+        @apply px-5 py-3.5 border-b border-gray-100 cursor-pointer hover:bg-purple-50 transition-colors;
+    }
+    .caja-mesa-item.active {
+        @apply bg-purple-50 border-l-4 border-purple-600;
+    }
+    .caja-mesa-nombre {
+        @apply font-semibold text-gray-800 text-sm;
+    }
+    .caja-mesa-total {
+        @apply font-bold text-purple-700;
+    }
+    .caja-mesa-tiempo {
+        @apply text-xs text-gray-400 mt-0.5;
+    }
+    .caja-empty-state {
+        @apply flex flex-col items-center justify-center h-full py-20 text-gray-400;
+    }
+    .caja-detalles-list {
+        @apply px-5 py-3 divide-y divide-gray-100 max-h-64 overflow-y-auto;
+    }
+    .caja-detalle-row {
+        @apply flex items-center justify-between py-2.5;
+    }
+    .caja-detalle-nombre {
+        @apply text-sm font-medium text-gray-800;
+    }
+    .caja-detalle-cant {
+        @apply text-xs text-gray-400;
+    }
+    .caja-detalle-precio {
+        @apply text-sm font-semibold text-gray-700;
+    }
+    .caja-total-box {
+        @apply px-5 py-4 bg-gray-50 border-t border-gray-200;
+    }
+    .caja-total-row {
+        @apply flex justify-between text-sm text-gray-500 mb-1;
+    }
+    .caja-total-final {
+        @apply flex justify-between text-base font-bold text-gray-800 mt-2 pt-2 border-t border-gray-300;
+    }
+    .caja-metodos-grid {
+        @apply grid grid-cols-3 gap-2 px-5 py-4;
+    }
+    .caja-metodo-btn {
+        @apply cursor-pointer;
+    }
+    .caja-metodo-inner {
+        @apply flex flex-col items-center gap-1 border border-gray-200 rounded-xl py-3 text-xs font-medium text-gray-600 hover:border-purple-400 transition-colors;
+    }
+    .caja-metodo-inner.active {
+        @apply border-purple-600 bg-purple-50 text-purple-700;
+    }
+    .caja-form-group {
+        @apply px-5 mb-4;
+    }
+    .caja-form-label {
+        @apply text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 block;
+    }
+    .caja-monto-input {
+        @apply w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-2xl font-bold text-gray-800 focus:outline-none focus:border-purple-400 text-center;
+    }
+    .caja-vuelto-box {
+        @apply mx-5 mb-4 bg-purple-50 border border-purple-200 rounded-xl px-4 py-3;
+    }
+    .caja-vuelto-valor {
+        @apply text-2xl font-bold text-purple-700 mt-1;
+    }
+    .caja-tipo-grid {
+        @apply grid grid-cols-2 gap-2 px-5 mb-4;
+    }
+    .caja-tipo-btn {
+        @apply cursor-pointer;
+    }
+    .caja-tipo-inner {
+        @apply flex flex-col items-center border border-gray-200 rounded-xl py-2.5 text-sm font-medium text-gray-600 hover:border-purple-400 transition-colors;
+    }
+    .caja-tipo-inner.active {
+        @apply border-purple-600 bg-purple-50 text-purple-700;
+    }
+    .caja-btn-emitir {
+        @apply w-full mx-5 mb-5 bg-purple-700 hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed;
+        width: calc(100% - 2.5rem);
+        margin-left: 1.25rem;
+    }
+    /* Mejorar selects en filtros */
+    select.form-input {
+        @apply cursor-pointer appearance-none bg-white pr-8;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+    }
+
+    /* ── Reportes ── */
+    .reporte-section-title {
+        @apply text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3;
+    }
+    .reporte-resumen-grid {
+        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4;
+    }
+    .reporte-resumen-card {
+        @apply bg-white border border-gray-200 rounded-xl p-4;
+    }
+    .reporte-resumen-card.purple {
+        @apply bg-purple-50 border-purple-200;
+    }
+    .reporte-resumen-label {
+        @apply text-xs text-gray-500 uppercase tracking-wide;
+    }
+    .reporte-resumen-valor {
+        @apply text-xl font-bold text-gray-800 mt-1;
+    }
+    .reporte-resumen-card.purple .reporte-resumen-valor {
+        @apply text-purple-700;
+    }
+    .reporte-main-grid {
+        @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+    }
+    .reporte-panel {
+        @apply bg-white border border-gray-200 rounded-xl overflow-hidden;
+    }
+    .reporte-panel-title {
+        @apply font-semibold text-gray-800 px-5 py-4 border-b border-gray-100;
+    }
+    .reporte-rank {
+        @apply w-6 h-6 rounded-full bg-gray-100 text-gray-500 text-xs font-bold flex items-center justify-center;
+    }
+    .reporte-rank.top {
+        @apply bg-purple-100 text-purple-700;
+    }
+    .reporte-barra-bg {
+        @apply w-full bg-gray-100 rounded-full h-2;
+    }
+    .reporte-barra-fill {
+        @apply bg-purple-600 h-2 rounded-full transition-all;
+    }
+
+    /* Botones de acción con icono + texto */
+    .btn-edit,
+    .btn-toggle,
+    .btn-delete {
+        @apply flex items-center justify-center gap-1.5;
+    }
+    .btn-edit i,
+    .btn-toggle i,
+    .btn-delete i {
+        @apply text-gray-700;
+    }
+}
