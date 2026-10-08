@@ -598,4 +598,22 @@
     .pass-hint.valid {
         @apply text-green-600 font-medium;
     }
+
+    .ruc-status-icon {
+        display: inline-block;
+        font-size: 0.7rem;
+        margin-left: 0.4rem;
+    }
+    .ruc-status-icon.cargando::after {
+        content: "Consultando...";
+        color: #7c3aed;
+    }
+    .ruc-status-icon.ok::after {
+        content: "✓ Encontrado";
+        color: #16a34a;
+    }
+    .ruc-status-icon.error::after {
+        content: "✗ No encontrado";
+        color: #dc2626;
+    }
 } /* end @layer components */

@@ -12,16 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cliente', function (Blueprint $table) {
-            $table->string('email')->nullable()->unique()->after('apellidos');
             $table->string('password')->nullable()->after('email');
-            $table->string('telefono', 15)->nullable()->after('password');
         });
     }
 
     public function down(): void
     {
         Schema::table('cliente', function (Blueprint $table) {
-            $table->dropColumn(['email', 'password', 'telefono']);
+            $table->dropColumn('password');
         });
     }
 };

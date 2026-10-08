@@ -42,6 +42,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'cliente' => [
+            'driver' => 'session',
+            'provider' => 'clientes',
+        ],
     ],
 
     /*
@@ -71,6 +75,10 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+        'clientes' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Cliente::class,
+        ],
     ],
 
     /*
@@ -96,6 +104,13 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        
+        'clientes' => [
+            'provider' => 'clientes',
+            'table' => 'password_reset_tokens', // o una tabla propia si prefieres separarla
             'expire' => 60,
             'throttle' => 60,
         ],

@@ -44,6 +44,21 @@
                 @enderror
             </div>
 
+            <div class="sa-form-group mb-4">
+                <label class="sa-form-label">
+                    Ubicación en Google Maps
+                    <span class="text-gray-400 font-normal">(link de inserción/embed)</span>
+                </label>
+                <textarea name="mapa_embed_url" rows="3" class="sa-form-input @error('mapa_embed_url') border-red-400 @enderror"
+                    placeholder="https://www.google.com/maps/embed?pb=...">{{ old('mapa_embed_url', $restaurante->mapa_embed_url) }}</textarea>
+                <p class="text-gray-400 text-xs mt-1">
+                    En Google Maps: busca el local → Compartir → Insertar un mapa → copia la URL que está dentro de <code>src="..."</code> y pégala aquí.
+                </p>
+                @error('mapa_embed_url')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div class="sa-form-group mb-6">
                 <label class="sa-form-label">Logo del Restaurante</label>
                 @if ($restaurante->logo_url)

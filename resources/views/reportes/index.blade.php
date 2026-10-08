@@ -23,7 +23,7 @@
 </div>
 
 {{-- Indicadores del día --}}
-<div class="reporte-section-title">📊 Indicadores de hoy</div>
+<div class="reporte-section-title"><i class="fa-solid fa-chart-column"></i> Indicadores de hoy</div>
 <div class="reserva-stats-grid mb-6">
     <div class="reserva-stat-card">
         <p class="reserva-stat-label">Pedidos hoy</p>
@@ -44,7 +44,7 @@
 </div>
 
 {{-- Resumen del período --}}
-<div class="reporte-section-title">💰 Resumen del período</div>
+<div class="reporte-section-title"><i class="fa-solid fa-sack-dollar"></i> Resumen del período</div>
 <div class="reporte-resumen-grid mb-6">
     <div class="reporte-resumen-card purple">
         <p class="reporte-resumen-label">Total ventas</p>
@@ -73,7 +73,7 @@
 
     {{-- Productos más vendidos --}}
     <div class="reporte-panel">
-        <h3 class="reporte-panel-title">🏆 Productos más vendidos</h3>
+        <h3 class="reporte-panel-title"><i class="fa-solid fa-trophy"></i> Productos más vendidos</h3>
         @if($productosMasVendidos->count() > 0)
         <table class="data-table">
             <thead>
@@ -98,22 +98,29 @@
             </tbody>
         </table>
         @else
-        <div class="empty-state"><p class="empty-icon">📊</p><p>Sin datos en este período</p></div>
+        <div class="empty-state"><p class="empty-icon"><i class="fa-solid fa-chart-column text-gray-300 text-4xl"></i></p><p>Sin datos en este período</p></div>
         @endif
     </div>
 
     {{-- Ventas por método de pago --}}
     <div class="reporte-panel">
-        <h3 class="reporte-panel-title">💳 Ventas por método de pago</h3>
+        <h3 class="reporte-panel-title"><i class="fa-solid fa-credit-card"></i> Ventas por método de pago</h3>
         @if($ventasPorMetodo->count() > 0)
         <div class="space-y-3 p-4">
             @php $totalVentas = $ventasPorMetodo->sum('total'); @endphp
             @foreach($ventasPorMetodo as $metodo)
-            @php $porcentaje = $totalVentas > 0 ? round(($metodo->total / $totalVentas) * 100) : 0; @endphp
+            @php
+                $porcentaje = $totalVentas > 0 ? round(($metodo->total / $totalVentas) * 100) : 0;
+                $icono = match($metodo->metodo) {
+                    'efectivo' => 'fa-money-bill-wave',
+                    'tarjeta'  => 'fa-credit-card',
+                    default    => 'fa-mobile-screen',
+                };
+            @endphp
             <div>
                 <div class="flex justify-between text-sm mb-1">
                     <span class="font-medium text-gray-700">
-                        {{ $metodo->metodo === 'efectivo' ? '💵' : ($metodo->metodo === 'tarjeta' ? '💳' : '📱') }}
+                        <i class="fa-solid {{ $icono }}"></i>
                         {{ ucfirst($metodo->metodo) }}
                     </span>
                     <span class="text-gray-500">S/ {{ number_format($metodo->total, 2) }} ({{ $porcentaje }}%)</span>
@@ -125,13 +132,13 @@
             @endforeach
         </div>
         @else
-        <div class="empty-state"><p class="empty-icon">💳</p><p>Sin datos en este período</p></div>
+        <div class="empty-state"><p class="empty-icon"><i class="fa-solid fa-credit-card text-gray-300 text-4xl"></i></p><p>Sin datos en este período</p></div>
         @endif
     </div>
 
     {{-- Ventas por categoría --}}
     <div class="reporte-panel">
-        <h3 class="reporte-panel-title">📂 Ventas por categoría</h3>
+        <h3 class="reporte-panel-title"><i class="fa-solid fa-folder-open"></i> Ventas por categoría</h3>
         @if($ventasPorCategoria->count() > 0)
         <table class="data-table">
             <thead>
@@ -152,13 +159,13 @@
             </tbody>
         </table>
         @else
-        <div class="empty-state"><p class="empty-icon">📂</p><p>Sin datos en este período</p></div>
+        <div class="empty-state"><p class="empty-icon"><i class="fa-solid fa-folder-open text-gray-300 text-4xl"></i></p><p>Sin datos en este período</p></div>
         @endif
     </div>
 
     {{-- Pedidos por estado --}}
     <div class="reporte-panel">
-        <h3 class="reporte-panel-title">📋 Pedidos por estado</h3>
+        <h3 class="reporte-panel-title"><i class="fa-solid fa-clipboard-list"></i> Pedidos por estado</h3>
         @if($pedidosPorEstado->count() > 0)
         <div class="space-y-3 p-4">
             @php $totalPedidos = $pedidosPorEstado->sum('cantidad'); @endphp
@@ -173,7 +180,7 @@
             @endforeach
         </div>
         @else
-        <div class="empty-state"><p class="empty-icon">📋</p><p>Sin datos en este período</p></div>
+        <div class="empty-state"><p class="empty-icon"><i class="fa-solid fa-clipboard-list text-gray-300 text-4xl"></i></p><p>Sin datos en este período</p></div>
         @endif
     </div>
 
@@ -182,7 +189,7 @@
 {{-- Ventas por día --}}
 @if($ventasPorDia->count() > 0)
 <div class="reporte-panel mt-6">
-    <h3 class="reporte-panel-title">📅 Ventas por día</h3>
+    <h3 class="reporte-panel-title"><i class="fa-solid fa-calendar-days"></i> Ventas por día</h3>
     <div class="overflow-x-auto">
         <table class="data-table">
             <thead>

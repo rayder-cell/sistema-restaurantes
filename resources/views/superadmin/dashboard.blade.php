@@ -69,13 +69,14 @@
                         <line x1="8" y1="12" x2="16" y2="12" />
                         <line x1="11" y1="18" x2="13" y2="18" />
                     </svg>
-                    <input type="text" id="filtro-tabla" placeholder="Filtrar por RUC o Nombre..." class="sa-filter-input"
-                        onkeyup="filtrarTabla()">
+                    <input type="text" id="filtro-tabla" placeholder="Filtrar por RUC o Nombre..."
+                        class="sa-filter-input" onkeyup="filtrarTabla()">
                 </div>
 
                 {{-- Filtro de estado --}}
                 <div class="sa-estado-wrap" id="estado-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sa-estado-dot-ico" id="estado-dot-ico">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sa-estado-dot-ico"
+                        id="estado-dot-ico">
                         <circle cx="12" cy="12" r="5" />
                     </svg>
                     <select id="filtro-estado" onchange="filtrarTabla()" class="sa-filter-select">
@@ -83,7 +84,8 @@
                         <option value="activo">Activo</option>
                         <option value="suspendido">Suspendido</option>
                     </select>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sa-estado-chevron">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        class="sa-estado-chevron">
                         <polyline points="6 9 12 15 18 9" />
                     </svg>
                 </div>
@@ -251,8 +253,7 @@
                     <div class="sa-form-group">
                         <label class="sa-form-label">Nombre del Restaurante *</label>
                         <input type="text" id="r_nombre" name="nombre" placeholder="E.g., Rústica Sabor"
-                            class="sa-form-input" value="{{ old('nombre') }}"
-                            autocomplete="off">
+                            class="sa-form-input" value="{{ old('nombre') }}" autocomplete="off">
                         <p class="sa-field-error hidden" id="err_nombre">
                             @error('nombre')
                                 {{ $message }}
@@ -262,8 +263,9 @@
                     <div class="sa-form-group">
                         <label class="sa-form-label">RUC Comercial *</label>
                         <input type="text" id="r_ruc" name="ruc" placeholder="E.g., 20123456789"
-                            class="sa-form-input" value="{{ old('ruc') }}"
-                            maxlength="11" inputmode="numeric" autocomplete="off">
+                            class="sa-form-input" value="{{ old('ruc') }}" maxlength="11" inputmode="numeric"
+                            autocomplete="off">
+                        <span id="ruc-status-icon" class="ruc-status-icon"></span>
                         <p class="sa-field-error hidden" id="err_ruc">
                             @error('ruc')
                                 {{ $message }}
@@ -275,9 +277,8 @@
                 <div class="sa-form-group">
                     <label class="sa-form-label">Dirección Fiscal *</label>
                     <input type="text" id="r_direccion" name="direccion"
-                        placeholder="E.g., Av. Javier Prado Este 1500, San Isidro, Lima"
-                        class="sa-form-input" value="{{ old('direccion') }}"
-                        autocomplete="off">
+                        placeholder="E.g., Av. Javier Prado Este 1500, San Isidro, Lima" class="sa-form-input"
+                        value="{{ old('direccion') }}" autocomplete="off">
                     <p class="sa-field-error hidden" id="err_direccion">
                         @error('direccion')
                             {{ $message }}
@@ -293,8 +294,7 @@
                     <div class="sa-form-group">
                         <label class="sa-form-label">Boleta Serie</label>
                         <input type="text" id="r_boleta" name="boleta_serie"
-                            value="{{ old('boleta_serie', 'B001') }}"
-                            class="sa-form-input" maxlength="4">
+                            value="{{ old('boleta_serie', 'B001') }}" class="sa-form-input" maxlength="4">
                         <p class="sa-field-error hidden" id="err_boleta">
                             @error('boleta_serie')
                                 {{ $message }}
@@ -304,8 +304,7 @@
                     <div class="sa-form-group">
                         <label class="sa-form-label">Factura Serie</label>
                         <input type="text" id="r_factura" name="factura_serie"
-                            value="{{ old('factura_serie', 'F001') }}"
-                            class="sa-form-input" maxlength="4">
+                            value="{{ old('factura_serie', 'F001') }}" class="sa-form-input" maxlength="4">
                         <p class="sa-field-error hidden" id="err_factura">
                             @error('factura_serie')
                                 {{ $message }}
@@ -319,8 +318,7 @@
                     <div class="sa-form-row-2">
                         <div class="sa-form-group">
                             <label class="sa-form-label">Nombre completo *</label>
-                            <input type="text" id="r_prop_nombre" name="propietario_nombre"
-                                class="sa-form-input"
+                            <input type="text" id="r_prop_nombre" name="propietario_nombre" class="sa-form-input"
                                 value="{{ old('propietario_nombre') }}" placeholder="Ej: Carlos Pérez"
                                 autocomplete="off">
                             <p class="sa-field-error hidden" id="err_prop_nombre">
@@ -331,8 +329,7 @@
                         </div>
                         <div class="sa-form-group">
                             <label class="sa-form-label">Correo electrónico *</label>
-                            <input type="email" id="r_prop_email" name="propietario_email"
-                                class="sa-form-input"
+                            <input type="email" id="r_prop_email" name="propietario_email" class="sa-form-input"
                                 value="{{ old('propietario_email') }}" placeholder="propietario@correo.com"
                                 autocomplete="off">
                             <p class="sa-field-error hidden" id="err_prop_email">
@@ -345,9 +342,8 @@
                     <div class="sa-form-group">
                         <label class="sa-form-label">Contraseña *</label>
                         <div class="sa-pass-wrap">
-                            <input type="password" id="r_prop_pass" name="propietario_password"
-                                class="sa-form-input" autocomplete="new-password"
-                                placeholder="Mínimo 8 caracteres">
+                            <input type="password" id="r_prop_pass" name="propietario_password" class="sa-form-input"
+                                autocomplete="new-password" placeholder="Mínimo 8 caracteres">
                             <button type="button" class="sa-pass-toggle" onclick="togglePassword()" tabindex="-1">
                                 <i class="fa-solid fa-eye" id="pass-toggle-icon"></i>
                             </button>
@@ -358,11 +354,16 @@
                             @enderror
                         </p>
                         <div class="sa-pass-hints" id="pass-hints">
-                            <span class="pass-hint" data-rule="length"><i class="fa-solid fa-circle-xmark"></i> Mínimo 8 caracteres</span>
-                            <span class="pass-hint" data-rule="upper"><i class="fa-solid fa-circle-xmark"></i> Una mayúscula</span>
-                            <span class="pass-hint" data-rule="lower"><i class="fa-solid fa-circle-xmark"></i> Una minúscula</span>
-                            <span class="pass-hint" data-rule="number"><i class="fa-solid fa-circle-xmark"></i> Un número</span>
-                            <span class="pass-hint" data-rule="special"><i class="fa-solid fa-circle-xmark"></i> Un carácter especial</span>
+                            <span class="pass-hint" data-rule="length"><i class="fa-solid fa-circle-xmark"></i> Mínimo 8
+                                caracteres</span>
+                            <span class="pass-hint" data-rule="upper"><i class="fa-solid fa-circle-xmark"></i> Una
+                                mayúscula</span>
+                            <span class="pass-hint" data-rule="lower"><i class="fa-solid fa-circle-xmark"></i> Una
+                                minúscula</span>
+                            <span class="pass-hint" data-rule="number"><i class="fa-solid fa-circle-xmark"></i> Un
+                                número</span>
+                            <span class="pass-hint" data-rule="special"><i class="fa-solid fa-circle-xmark"></i> Un
+                                carácter especial</span>
                         </div>
                     </div>
                 </div>
@@ -397,7 +398,7 @@
             gap: 0.25rem;
         }
 
-        
+
 
         .sa-input-error {
             border-color: #EF4444 !important;
@@ -419,9 +420,11 @@
         .sa-pass-wrap {
             position: relative;
         }
+
         .sa-pass-wrap .sa-form-input {
             padding-right: 2.5rem;
         }
+
         .sa-pass-toggle {
             position: absolute;
             right: 0.75rem;
@@ -432,6 +435,7 @@
             background: none;
             border: none;
         }
+
         .sa-pass-toggle:hover {
             color: #4b5563;
         }
@@ -443,6 +447,7 @@
             gap: 0.25rem 0.75rem;
             margin-top: 0.5rem;
         }
+
         .pass-hint {
             font-size: 0.75rem;
             color: #9ca3af;
@@ -451,9 +456,11 @@
             gap: 0.25rem;
             transition: color 0.15s;
         }
+
         .pass-hint i {
             font-size: 0.65rem;
         }
+
         .pass-hint.valid {
             color: #16a34a;
             font-weight: 600;
@@ -468,6 +475,7 @@
             padding: 0.75rem 1rem;
             margin-top: 0.5rem;
         }
+
         .sa-resumen-row {
             display: flex;
             justify-content: space-between;
@@ -475,20 +483,24 @@
             padding: 0.35rem 0;
             font-size: 0.8rem;
         }
+
         .sa-resumen-label {
             color: #6B7280;
             flex-shrink: 0;
         }
+
         .sa-resumen-val {
             color: #111827;
             font-weight: 600;
             text-align: right;
             word-break: break-word;
         }
+
         .sa-resumen-divider {
             border-top: 1px dashed #E5E7EB;
             margin: 0.35rem 0;
         }
+
         .sa-resumen-aviso {
             color: #DC2626;
             font-weight: 600;
@@ -698,7 +710,7 @@
                 mostrarError('r_ruc', 'err_ruc', '⚠ El RUC debe tener 11 dígitos y empezar con 10 o 20.');
                 valido = false;
             }
-            
+
             if (!direccion) {
                 mostrarError('r_direccion', 'err_direccion', '⚠ La dirección fiscal es obligatoria.');
                 valido = false;
@@ -747,13 +759,13 @@
         function guardarRestaurante() {
             if (!validarFormulario()) return;
 
-            const nombre     = document.getElementById('r_nombre').value.trim();
-            const ruc        = document.getElementById('r_ruc').value.trim();
-            const direccion  = document.getElementById('r_direccion').value.trim();
-            const boleta     = document.getElementById('r_boleta').value.trim().toUpperCase();
-            const factura    = document.getElementById('r_factura').value.trim().toUpperCase();
+            const nombre = document.getElementById('r_nombre').value.trim();
+            const ruc = document.getElementById('r_ruc').value.trim();
+            const direccion = document.getElementById('r_direccion').value.trim();
+            const boleta = document.getElementById('r_boleta').value.trim().toUpperCase();
+            const factura = document.getElementById('r_factura').value.trim().toUpperCase();
             const propNombre = document.getElementById('r_prop_nombre').value.trim();
-            const propEmail  = document.getElementById('r_prop_email').value.trim();
+            const propEmail = document.getElementById('r_prop_email').value.trim();
 
             Swal.fire({
                 ...swalBase,
@@ -836,6 +848,42 @@
                 wrap.classList.add('suspendido');
             }
         });
+
+        let rucTimeout;
+        document.getElementById('r_ruc').addEventListener('input', function() {
+            let v = this.value.replace(/\D/g, '').slice(0, 11);
+            if (v.length >= 1 && v[0] !== '1' && v[0] !== '2') v = v.slice(1);
+            if (v.length >= 2 && !['10', '20'].includes(v.slice(0, 2))) v = v.slice(0, 1);
+            this.value = v;
+
+            const icon = document.getElementById('ruc-status-icon');
+            icon.className = 'ruc-status-icon';
+
+            clearTimeout(rucTimeout);
+            if (v.length === 11) {
+                rucTimeout = setTimeout(() => consultarRuc(v), 400);
+            }
+        });
+        async function consultarRuc(ruc) {
+            const icon = document.getElementById('ruc-status-icon');
+            icon.className = 'ruc-status-icon cargando';
+
+            try {
+                const res = await fetch(`{{ url('superadmin/consultar-ruc') }}/${ruc}`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+
+                if (data.razon_social) {
+                    document.getElementById('r_nombre').value = data.razon_social;
+                }
+                if (data.direccion) {
+                    document.getElementById('r_direccion').value = data.direccion;
+                }
+                icon.className = 'ruc-status-icon ok';
+            } catch (e) {
+                icon.className = 'ruc-status-icon error';
+            }
+        }
     </script>
 
 @endsection

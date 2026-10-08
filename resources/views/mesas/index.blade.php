@@ -140,6 +140,11 @@
 
                     {{-- Footer --}}
                     <div class="mesa-card-footer">
+                        <button
+                            onclick="verQR({{ $mesa->id }}, {{ $mesa->numero }}, '{{ $mesa->qr_token }}')"
+                            class="mesa-btn-qr">
+                            <i class="fa-solid fa-qrcode"></i> Ver QR
+                        </button>
                         @if (in_array(session('usuario_rol'), ['propietario', 'administrador']))
                             <button
                                 onclick="abrirModalEstado({{ $mesa->id }}, {{ $mesa->numero }}, '{{ $mesa->estado }}')"
@@ -247,6 +252,32 @@
         </div>
     </div>
 
+    {{-- MODAL: Código QR --}}
+    <div id="modal-qr" class="mesas-modal-overlay hidden">
+        <div class="mesas-modal" style="max-width:380px">
+            <div class="mesas-modal-header">
+                <h3 class="mesas-modal-title" id="modal-qr-titulo">Código QR</h3>
+                <button onclick="cerrarModalQR()" class="mesas-modal-close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="mesas-modal-body" style="text-align:center">
+                <img id="qr-modal-img" src="" alt="Código QR de la mesa"
+                    style="width:260px;height:260px;margin:0 auto 12px;border-radius:12px;border:1px solid #e5e7eb;display:block">
+                <p class="text-xs text-gray-400 break-all mb-4" id="qr-modal-link"></p>
+                <div class="mesas-modal-actions">
+                    <a id="qr-modal-descargar" href="#" download
+                        class="mesas-btn-cancelar" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px">
+                        <i class="fa-solid fa-download"></i> Descargar
+                    </a>
+                    <button onclick="imprimirQR()" class="mesas-btn-guardar">
+                        <i class="fa-solid fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Form oculto eliminar --}}
     <form id="form-eliminar-mesa" method="POST" class="hidden">
         @csrf
@@ -345,6 +376,45 @@
                 });
         }
 
+        // ── Modal código QR ────────────────────────────
+        function verQR(id, numero, token) {
+            const numeroFmt = String(numero).padStart(2, '0');
+            const url = `${window.location.origin}/menu/${token}`;
+            const imgSrc = `/mesas/${id}/qr-imagen`;
+
+            document.getElementById('modal-qr-titulo').textContent = `Mesa ${numeroFmt} — Código QR`;
+            document.getElementById('qr-modal-img').src = imgSrc;
+            document.getElementById('qr-modal-link').textContent = url;
+
+            const btnDescargar = document.getElementById('qr-modal-descargar');
+            btnDescargar.href = imgSrc;
+            btnDescargar.setAttribute('download', `mesa-${numeroFmt}-qr.svg`);
+
+            document.getElementById('modal-qr').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModalQR() {
+            document.getElementById('modal-qr').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function imprimirQR() {
+            const src = document.getElementById('qr-modal-img').src;
+            const titulo = document.getElementById('modal-qr-titulo').textContent;
+            const ventana = window.open('', '_blank');
+            ventana.document.write(`
+                <html>
+                <head><title>${titulo}</title></head>
+                <body style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;font-family:sans-serif">
+                    <h2>${titulo}</h2>
+                    <img src="${src}" style="width:300px" onload="window.print();">
+                </body>
+                </html>
+            `);
+            ventana.document.close();
+        }
+
         // ── Eliminar ──────────────────────────────────
         function eliminarMesa(id, numero) {
             Swal.fire({
@@ -395,6 +465,9 @@
         });
         document.getElementById('modal-estado').addEventListener('click', e => {
             if (e.target === e.currentTarget) cerrarModalEstado();
+        });
+        document.getElementById('modal-qr').addEventListener('click', e => {
+            if (e.target === e.currentTarget) cerrarModalQR();
         });
 
         function liberarMesaManual(mesaId, numero) {
@@ -514,9 +587,13 @@
             </div>`;
             }
 
-            let footerHtml = '';
+            let footerHtml = `
+            <button onclick="verQR(${mesa.id}, ${mesa.numero}, '${mesa.qr_token}')" class="mesa-btn-qr">
+                <i class="fa-solid fa-qrcode"></i> Ver QR
+            </button>`;
+
             if (VER_TODO) {
-                footerHtml = `
+                footerHtml += `
             <button onclick="abrirModalEstado(${mesa.id}, ${mesa.numero}, '${mesa.estado}')" class="mesa-btn-estado">
                 <i class="fa-solid fa-rotate"></i> Cambiar estado
             </button>

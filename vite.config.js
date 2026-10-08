@@ -9,6 +9,8 @@ export default defineConfig({
                 "resources/assets/css/pages/dashboard.css",
                 "resources/assets/css/pages/crud.css",
                 "resources/assets/css/components/sidebar.css",
+                "resources/assets/css/pages/landing.css",
+                "resources/assets/css/pages/restaurante-show.css",
                 "resources/assets/js/app.js",
             ],
             refresh: true,

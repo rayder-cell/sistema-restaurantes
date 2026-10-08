@@ -12,6 +12,8 @@ class Restaurante extends Model
         'nombre',
         'ruc',
         'direccion',
+        'descripcion',
+        'mapa_embed_url',
         'logo_url',
         'estado',
     ];
@@ -46,6 +48,11 @@ class Restaurante extends Model
     public function productos()
     {
         return $this->hasMany(Producto::class, 'restaurante_id');
+    }
+
+    public function galeria()
+    {
+        return $this->hasMany(GaleriaRestaurante::class, 'restaurante_id')->orderBy('orden');
     }
 
     public function mesas()

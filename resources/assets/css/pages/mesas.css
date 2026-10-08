@@ -282,6 +282,26 @@
         width: 28px;
         height: 28px;
     }
+    .mesa-btn-qr {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #f2ecf4;
+        color: #4f378a;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 8px;
+        transition: background 0.15s;
+    }
+    .mesa-btn-qr:hover {
+        background: #e5d9ef;
+    }
 }
 
 /* ── Responsive móvil ── */

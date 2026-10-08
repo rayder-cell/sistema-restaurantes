@@ -141,7 +141,7 @@
                         <input type="radio" name="metodo" value="yape" class="hidden">
                         <div class="caja-metodo-inner" data-metodo="yape">
                             <span class="text-xl"><i class="fa-solid fa-mobile-screen"></i></span>
-                            <span>Yape/Plin</span>
+                            <span>Yape</span>
                         </div>
                     </label>
                 </div>
@@ -184,9 +184,15 @@
 
                 {{-- Cliente (para factura) --}}
                 <div class="caja-form-group" id="datos-cliente" style="display:none">
-                    <input type="text" name="cliente_nombre" placeholder="Razón social" class="form-input mb-2">
-                    <input type="text" name="cliente_ruc" placeholder="RUC (11 dígitos)" class="form-input"
-                        maxlength="11">
+                    <input type="text" name="cliente_nombre" id="factura-nombre" placeholder="Razón social"
+                        class="form-input mb-2">
+                    <input type="text" name="cliente_ruc" id="factura-ruc" placeholder="RUC (11 dígitos)"
+                        class="form-input" maxlength="11" inputmode="numeric"
+                        onkeydown="return ['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(event.key) || /^[0-9]$/.test(event.key)"
+                        oninput="validarRucEnVivo()">
+                    <p class="text-xs text-red-500 mt-1 hidden" id="factura-ruc-error">El RUC debe tener 11 dígitos y
+                        empezar
+                        con 10 o 20.</p>
                 </div>
 
                 <button type="submit" id="btn-emitir" class="caja-btn-emitir" disabled>
@@ -260,8 +266,10 @@
     <script src="https://checkout.culqi.com/js/v4"></script>
 
     <script>
-        const CULQI_PUBLIC_KEY = "{{ config('culqi.public_key') }}";
-        Culqi.publicKey = CULQI_PUBLIC_KEY;
+        const CULQI_PUBLIC_KEY = "{{ $culqiPublicKey }}";
+        if (typeof Culqi !== 'undefined' && CULQI_PUBLIC_KEY) {
+            Culqi.publicKey = CULQI_PUBLIC_KEY;
+        }
 
         let totalMesaActual = 0;
         let metodoSeleccionado = 'efectivo';
@@ -312,8 +320,8 @@
                     document.getElementById('panel-detalle').innerHTML = html;
                     document.getElementById('pago-pedido-ids').value = JSON.stringify(data.pedido_ids);
                     document.getElementById('monto-recibido').value = totalMesaActual.toFixed(2);
-                    document.getElementById('btn-emitir').disabled = false;
                     calcularVuelto();
+                    validarRucEnVivo();
 
                     document.querySelectorAll('.caja-mesa-item').forEach(item => item.classList.remove('active'));
                     if (el) el.classList.add('active');
@@ -329,21 +337,38 @@
         // Métodos de pago
         document.querySelectorAll('[data-metodo]').forEach(el => {
             el.addEventListener('click', () => {
+                const metodo = el.getAttribute('data-metodo');
+
+                if (metodo === 'tarjeta' && !CULQI_PUBLIC_KEY) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Pago con tarjeta no disponible',
+                        text: 'Este restaurante aún no configuró su cuenta de Culqi. Ve a Configuración → Pagos.',
+                        confirmButtonColor: '#7e22ce'
+                    });
+                    return;
+                }
+
                 document.querySelectorAll('[data-metodo]').forEach(e => e.classList.remove('active'));
                 el.classList.add('active');
                 document.getElementById('datos-cliente').style.display = 'none';
 
-                metodoSeleccionado = el.getAttribute('data-metodo');
+                metodoSeleccionado = metodo;
 
                 const esTarjeta = metodoSeleccionado === 'tarjeta';
-                document.getElementById('grupo-monto-recibido').style.display = esTarjeta ? 'none' : '';
-                document.getElementById('grupo-vuelto').style.display = esTarjeta ? 'none' : '';
+                const esYape = metodoSeleccionado === 'yape';
+                const sinMontoEditable = esTarjeta || esYape;
+
+                document.getElementById('grupo-monto-recibido').style.display = sinMontoEditable ? 'none' : '';
+                document.getElementById('grupo-vuelto').style.display = sinMontoEditable ? 'none' : '';
                 document.getElementById('aviso-tarjeta').style.display = esTarjeta ? '' : 'none';
                 document.getElementById('pago-cliente-email').required = esTarjeta;
 
-                if (esTarjeta) {
+                if (sinMontoEditable) {
                     document.getElementById('monto-recibido').value = totalMesaActual.toFixed(2);
                 }
+
+                calcularVuelto();
             });
         });
 
@@ -354,8 +379,47 @@
                 radio.nextElementSibling.classList.add('active');
                 document.getElementById('datos-cliente').style.display =
                     radio.value === 'factura' ? 'block' : 'none';
+                validarRucEnVivo();
             });
         });
+
+        function esRucValido(ruc) {
+            return /^(10|20)\d{9}$/.test(ruc);
+        }
+
+        function validarRucEnVivo() {
+            const tipoSeleccionado = document.querySelector('input[name="tipo"]:checked')?.value;
+            const btn = document.getElementById('btn-emitir');
+            const haySeleccion = !!document.getElementById('pago-pedido-ids').value;
+            const errorEl = document.getElementById('factura-ruc-error');
+            const inputEl = document.getElementById('factura-ruc');
+
+            if (tipoSeleccionado !== 'factura') {
+                errorEl.classList.add('hidden');
+                inputEl.classList.remove('border-red-500');
+                btn.disabled = !haySeleccion;
+                return;
+            }
+
+            const ruc = inputEl.value.trim();
+
+            if (ruc.length === 0) {
+                errorEl.classList.add('hidden');
+                inputEl.classList.remove('border-red-500');
+                btn.disabled = true;
+                return;
+            }
+
+            if (esRucValido(ruc)) {
+                errorEl.classList.add('hidden');
+                inputEl.classList.remove('border-red-500');
+                btn.disabled = !haySeleccion;
+            } else {
+                errorEl.classList.remove('hidden');
+                inputEl.classList.add('border-red-500');
+                btn.disabled = true;
+            }
+        }
 
         function abrirModalCaja() {
             document.getElementById('modal-abrir-caja').classList.remove('hidden');
@@ -374,27 +438,45 @@
         }
 
         // ── Callback de Culqi: se dispara cuando el widget genera el token ──
-        Culqi.token = function() {
+        // ── Callback de Culqi: DEBE ser una función global llamada exactamente
+        // "culqi" (minúscula) — así es como el iframe de checkout.culqi.com v4
+        // busca el callback, sin importar el nombre del objeto Culqi.token.
+        function culqi() {
             if (Culqi.token) {
                 const token = Culqi.token.id;
                 document.getElementById('culqi-token').value = token;
                 enviarFormularioPago();
-            } else if (Culqi.error) {
+            } else if (Culqi.order) {
+                // Por si en el futuro usas el flujo de "Order" en vez de "Token"
+                console.warn('Culqi devolvió un Order en vez de un Token:', Culqi.order);
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'No se pudo procesar la tarjeta',
-                    text: Culqi.error.user_message || 'Verifica los datos e intenta de nuevo.',
+                    text: Culqi.error?.user_message || 'Verifica los datos e intenta de nuevo.',
                     confirmButtonColor: '#7e22ce'
                 });
                 const btn = document.getElementById('btn-emitir');
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-print"></i> Emitir Comprobante';
             }
-        };
+        }
 
         // ── Envío del formulario, ahora separado para reusarlo tras el token de Culqi ──
         document.getElementById('form-pago').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            const tipoSeleccionado = document.querySelector('input[name="tipo"]:checked')?.value;
+            if (tipoSeleccionado === 'factura') {
+                const ruc = document.getElementById('factura-ruc').value.trim();
+                const errorEl = document.getElementById('factura-ruc-error');
+                if (!esRucValido(ruc)) {
+                    errorEl.classList.remove('hidden');
+                    document.getElementById('factura-ruc').focus();
+                    return;
+                }
+                errorEl.classList.add('hidden');
+            }
 
             const btn = document.getElementById('btn-emitir');
 
@@ -494,8 +576,6 @@
                             timer: 2500,
                             showConfirmButton: false
                         });
-
-                        window.open(`/caja/comprobante/${data.comprobante_id}/pdf`, '_blank');
                     } else {
                         Swal.fire({
                             icon: 'error',

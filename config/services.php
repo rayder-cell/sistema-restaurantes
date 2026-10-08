@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'apisnet' => [
+        'token' => env('APISNET_TOKEN'),
+    ],
+
 ];

@@ -1,0 +1,161 @@
+/* ==========================================================================
+   Página de detalle de restaurante (resources/views/restaurantes/show.blade.php)
+   ========================================================================== */
+
+.rest-header {
+    position: relative;
+    height: 280px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+}
+
+.rest-header-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.rest-header-content {
+    position: relative;
+    z-index: 1;
+    padding: 24px 40px;
+    color: #fff;
+    width: 100%;
+}
+
+.rest-header-content h1 {
+    font-size: 32px;
+    margin: 0 0 6px;
+}
+
+.rest-header-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.rest-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--gris-brd, #e5e7eb);
+    padding: 0 40px;
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.rest-tab-btn {
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-weight: 600;
+    font-size: 15px;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.rest-tab-btn.active {
+    color: var(--verde-lt, #16693f);
+    border-bottom-color: var(--verde-lt, #16693f);
+}
+
+.rest-tab-panel {
+    display: none;
+    padding: 32px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.rest-tab-panel.active {
+    display: block;
+}
+
+.rest-map-frame {
+    width: 100%;
+    height: 400px;
+    border: 0;
+    border-radius: 12px;
+}
+
+.rest-galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.rest-galeria-grid img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.rest-galeria-empty,
+.rest-productos-empty {
+    text-align: center;
+    padding: 40px 0;
+    color: #9ca3af;
+}
+
+/* ── RESPONSIVE: MÓVIL (≤ 768px) ─────────── */
+@media (max-width: 768px) {
+    .rest-header {
+        height: 200px;
+    }
+
+    .rest-header-content {
+        padding: 16px 20px;
+    }
+
+    .rest-header-content h1 {
+        font-size: 22px;
+    }
+
+    .rest-header-meta {
+        font-size: 12px;
+        flex-wrap: wrap;
+    }
+
+    /* Pestañas con scroll horizontal en vez de apretarse o cortarse */
+    .rest-tabs {
+        padding: 0 16px;
+        gap: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .rest-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .rest-tab-btn {
+        flex-shrink: 0;
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+
+    .rest-tab-panel {
+        padding: 20px 16px;
+    }
+
+    .rest-map-frame {
+        height: 260px;
+    }
+
+    .rest-galeria-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .rest-galeria-grid img {
+        height: 120px;
+    }
+}

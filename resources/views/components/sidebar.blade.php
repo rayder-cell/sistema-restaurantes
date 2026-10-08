@@ -97,6 +97,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('configuracion.pagos') }}"
+                        class="nav-link {{ request()->routeIs('configuracion.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-credit-card"></i> Pagos
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('reservas.index') }}"
                         class="nav-link {{ request()->routeIs('reservas.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-calendar-days"></i> Reservas

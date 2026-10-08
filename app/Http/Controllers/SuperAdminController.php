@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Http;
 
 class SuperAdminController extends Controller
 {
@@ -22,12 +23,12 @@ class SuperAdminController extends Controller
         $activos           = Restaurante::where('estado', 'activo')->count();
         $suspendidos       = Restaurante::where('estado', 'suspendido')->count();
         $nuevosEsteMes     = Restaurante::whereMonth('created_at', now()->month)
-                                ->whereYear('created_at', now()->year)->count();
+            ->whereYear('created_at', now()->year)->count();
         $porcentajeActivos = $totalRestaurantes > 0
             ? round(($activos / $totalRestaurantes) * 100) : 0;
 
         $primerRestaurante = Restaurante::where('estado', 'activo')
-                                ->orderBy('created_at')->first();
+            ->orderBy('created_at')->first();
 
         return view('superadmin.dashboard', compact(
             'restaurantes',
@@ -141,8 +142,14 @@ class SuperAdminController extends Controller
     {
         $request->validate([
             'nombre'               => 'required|string|max:150',
-            'ruc'                  => 'required|digits:11|regex:/^(10|20)\d{9}$/|unique:restaurante,ruc,' . $restaurante->id,
+            'ruc'                  => [
+                'required',
+                'digits:11',
+                'regex:/^(10|20)\d{9}$/',
+                'unique:restaurante,ruc,' . $restaurante->id,
+            ],
             'direccion'            => 'required|string|max:255',
+            'mapa_embed_url'       => 'nullable|string|max:2000',
             'logo'                 => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'propietario_password' => [
                 'nullable',
@@ -152,6 +159,7 @@ class SuperAdminController extends Controller
             'ruc.digits' => 'El RUC debe tener exactamente 11 dígitos numéricos.',
             'ruc.regex'  => 'El RUC debe empezar con 10 (persona natural) o 20 (persona jurídica).',
             'ruc.unique' => 'Ya existe un restaurante registrado con ese RUC.',
+            'mapa_embed_url.max' => 'El link de Google Maps es demasiado largo.',
             'propietario_password.min'     => 'La contraseña no cumple los requisitos de seguridad (mínimo 8 caracteres, mayúscula, minúscula, número y símbolo).',
             'propietario_password.mixed'   => 'La contraseña debe incluir mayúsculas y minúsculas.',
             'propietario_password.numbers' => 'La contraseña debe incluir al menos un número.',
@@ -159,9 +167,10 @@ class SuperAdminController extends Controller
         ]);
 
         $data = [
-            'nombre'    => $request->nombre,
-            'ruc'       => $request->ruc,
-            'direccion' => $request->direccion,
+            'nombre'         => $request->nombre,
+            'ruc'            => $request->ruc,
+            'direccion'      => $request->direccion,
+            'mapa_embed_url' => $request->mapa_embed_url,
         ];
 
         if ($request->hasFile('logo')) {
@@ -226,5 +235,28 @@ class SuperAdminController extends Controller
         $restaurante->update(['estado' => 'activo']);
         return redirect()->route('superadmin.dashboard')
             ->with('success', "Restaurante \"{$restaurante->nombre}\" reactivado correctamente.");
+    }
+
+    public function consultarRuc(string $ruc)
+    {
+        if (!preg_match('/^(10|20)\d{9}$/', $ruc)) {
+            return response()->json(['error' => 'RUC inválido'], 422);
+        }
+
+        $response = Http::withToken(config('services.apisnet.token'))
+            ->get('https://api.decolecta.com/v1/sunat/ruc', ['numero' => $ruc]);
+
+        if ($response->failed()) {
+            return response()->json(['error' => 'No se pudo consultar el RUC'], 502);
+        }
+
+        $data = $response->json();
+
+        return response()->json([
+            'razon_social' => $data['razon_social'] ?? null,
+            'direccion'    => $data['direccion'] ?? null,
+            'estado'       => $data['estado'] ?? null,
+            'condicion'    => $data['condicion'] ?? null,
+        ]);
     }
 }

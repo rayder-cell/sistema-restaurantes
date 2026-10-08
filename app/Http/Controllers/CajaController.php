@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\CulqiService;
+use App\Services\NubeFactService;
+use App\Services\ImpresoraTicketService;
 
 class CajaController extends Controller
 {
@@ -36,6 +38,7 @@ class CajaController extends Controller
             ->select(
                 'p.id',
                 'p.mesa_id',
+                'p.cliente_id',
                 'p.mesa_liberada_numero',
                 'p.total',
                 'p.created_at',
@@ -46,14 +49,26 @@ class CajaController extends Controller
             ->orderBy('p.created_at')
             ->get();
 
+        // Agrupar: pedidos con mesa activa se agrupan por mesa.
+        // Pedidos liberados (mesa_id null) se agrupan por cliente, ya que todos
+        // los pedidos de esa visita comparten el mismo cliente_id.
         $mesasACobrar = $pedidosPendientes
-            ->groupBy(fn($p) => $p->mesa_id ? 'mesa-' . $p->mesa_id : 'huerfano-' . $p->id)
-            ->map(function ($pedidos) {
+            ->groupBy(function ($p) {
+                if ($p->mesa_id) return 'mesa-' . $p->mesa_id;
+                if ($p->cliente_id) return 'cliente-' . $p->cliente_id;
+                return 'huerfano-' . $p->id;
+            })
+            ->map(function ($pedidos, $clave) {
                 $primero    = $pedidos->first();
                 $esHuerfano = is_null($primero->mesa_id);
+
+                $mesaNumero = $esHuerfano
+                    ? $pedidos->pluck('mesa_liberada_numero')->filter()->first()
+                    : $primero->mesa_numero;
+
                 return (object) [
-                    'clave'             => $esHuerfano ? 'huerfano-' . $primero->id : 'mesa-' . $primero->mesa_id,
-                    'mesa_numero'       => $esHuerfano ? $primero->mesa_liberada_numero : $primero->mesa_numero,
+                    'clave'             => $clave,
+                    'mesa_numero'       => $mesaNumero,
                     'liberada'          => $esHuerfano,
                     'cliente_nombre'    => $primero->cliente_nombre,
                     'cliente_apellidos' => $primero->cliente_apellidos,
@@ -78,10 +93,12 @@ class CajaController extends Controller
             ->selectRaw('count(*) as total_comprobantes, sum(total) as total_ventas')
             ->first();
 
-        return view('caja.index', compact('caja', 'apertura', 'mesasACobrar', 'series', 'ventasHoy'));
+        $restaurante = DB::table('restaurante')->where('id', $restauranteId)->first();
+        $culqiPublicKey = $restaurante->culqi_public_key ?? null;
+        return view('caja.index', compact('caja', 'apertura', 'mesasACobrar', 'series', 'ventasHoy', 'culqiPublicKey'));
     }
 
-    // ── Ver detalle combinado de una cuenta (mesa activa o pedido liberado) ──
+    // ── Ver detalle combinado de una cuenta (mesa activa, cliente liberado, o huérfano) ──
     public function detalleCuenta($clave)
     {
         $restauranteId = session('restaurante_id');
@@ -96,6 +113,17 @@ class CajaController extends Controller
                 ->where('p.restaurante_id', $restauranteId)
                 ->whereNotIn('p.estado', ['pagado', 'cancelado'])
                 ->select('p.*', 'm.numero as mesa_numero', 'c.nombre as cliente_nombre', 'c.apellidos as cliente_apellidos')
+                ->get();
+        } elseif (str_starts_with($clave, 'cliente-')) {
+            $clienteId = (int) str_replace('cliente-', '', $clave);
+
+            $pedidos = DB::table('pedido as p')
+                ->leftJoin('cliente as c', 'p.cliente_id', '=', 'c.id')
+                ->where('p.cliente_id', $clienteId)
+                ->where('p.restaurante_id', $restauranteId)
+                ->whereNull('p.mesa_id')
+                ->whereNotIn('p.estado', ['pagado', 'cancelado'])
+                ->select('p.*', 'p.mesa_liberada_numero as mesa_numero', 'c.nombre as cliente_nombre', 'c.apellidos as cliente_apellidos')
                 ->get();
         } elseif (str_starts_with($clave, 'huerfano-')) {
             $pedidoId = (int) str_replace('huerfano-', '', $clave);
@@ -122,10 +150,11 @@ class CajaController extends Controller
             ->get();
 
         $primero = $pedidos->first();
+        $mesaNumero = $pedidos->pluck('mesa_numero')->filter()->first();
 
         return response()->json([
-            'mesa_numero'       => $primero->mesa_numero,
-            'liberada'          => str_starts_with($clave, 'huerfano-'),
+            'mesa_numero'       => $mesaNumero,
+            'liberada'          => is_null($primero->mesa_id),
             'cliente_nombre'    => $primero->cliente_nombre,
             'cliente_apellidos' => $primero->cliente_apellidos,
             'total'             => $pedidos->sum('total'),
@@ -145,8 +174,8 @@ class CajaController extends Controller
             'tipo'           => 'required|in:boleta,factura',
             'metodo'         => 'required|in:efectivo,tarjeta,yape,plin',
             'monto_recibido' => 'required|numeric|min:0',
-            'cliente_nombre' => 'nullable|string|max:150',
-            'cliente_ruc'    => 'nullable|string|max:11',
+            'cliente_nombre' => ['nullable', 'required_if:tipo,factura', 'string', 'max:150'],
+            'cliente_ruc'    => ['nullable', 'required_if:tipo,factura', 'digits:11'],
             'cliente_email'  => 'nullable|email',
             'culqi_token'    => 'required_if:metodo,tarjeta|nullable|string',
         ]);
@@ -182,6 +211,37 @@ class CajaController extends Controller
         $subtotal = round($total / 1.18, 2);
         $igv      = round($total - $subtotal, 2);
 
+        // ── Validar y armar los datos del cliente ANTES de cobrar con Culqi ──
+        // (así nunca cobramos si el RUC de factura viene mal y luego falla SUNAT)
+        if ($request->tipo === 'factura') {
+            $ruc = trim((string) $request->cliente_ruc);
+
+            if (!preg_match('/^\d{11}$/', $ruc)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El RUC debe tener exactamente 11 dígitos numéricos.',
+                ], 422);
+            }
+
+            $clienteRuc    = $ruc;
+            $clienteNombre = $request->cliente_nombre ?: 'Cliente';
+
+            $datosCliente = [
+                'cliente_tipo_documento'   => 6, // RUC
+                'cliente_numero_documento' => $clienteRuc,
+                'cliente_denominacion'     => $clienteNombre,
+            ];
+        } else {
+            $clienteRuc    = null;
+            $clienteNombre = $request->cliente_nombre ?: 'Cliente Varios';
+
+            $datosCliente = [
+                'cliente_tipo_documento'   => 1, // DNI
+                'cliente_numero_documento' => '00000000',
+                'cliente_denominacion'     => $clienteNombre,
+            ];
+        }
+
         // ── Si el método es tarjeta, cobramos vía Culqi ANTES de tocar la BD ──
         $culqiChargeId = null;
 
@@ -202,6 +262,51 @@ class CajaController extends Controller
             $culqiChargeId = $resultado['charge_id'];
         }
 
+        // ── Armar los items para NubeFacT a partir del detalle real del pedido ──
+        $detallesPedido = DB::table('detalle_pedido as dp')
+            ->join('producto as pr', 'dp.producto_id', '=', 'pr.id')
+            ->whereIn('dp.pedido_id', $pedidoIds)
+            ->select('dp.*', 'pr.nombre as producto_nombre')
+            ->get();
+
+        $itemsNubeFact = $detallesPedido->map(function ($d) {
+            return [
+                'descripcion'     => $d->producto_nombre,
+                'cantidad'        => (float) $d->cantidad,
+                'valor_unitario'  => round($d->precio_unitario / 1.18, 2),
+                'precio_unitario' => (float) $d->precio_unitario,
+            ];
+        })->toArray();
+
+        // ── Determinar serie/número oficiales SUNAT (BBB1 boleta, FFF1 factura) ──
+        $sunatSerie = $request->tipo === 'factura' ? 'FFF1' : 'BBB1';
+
+        $ultimoNumeroSunat = DB::table('comprobante')
+            ->where('restaurante_id', $restauranteId)
+            ->where('sunat_serie', $sunatSerie)
+            ->max('sunat_numero');
+
+        // NOTA: iniciamos en 3 porque los números 1 y 2 ya se usaron
+        // en pruebas directas contra NubeFacT (fuera de este flujo real).
+        $siguienteNumeroSunat = max($ultimoNumeroSunat ?? 0, 2) + 1;
+
+        // ── Enviar a NubeFacT ──
+        $nubeFactService = app(NubeFactService::class);
+        $tipoComprobanteSunat = $request->tipo === 'factura' ? 1 : 2;
+
+        $resultadoSunat = $nubeFactService->emitirBoleta(array_merge($datosCliente, [
+            'serie'  => $sunatSerie,
+            'numero' => $siguienteNumeroSunat,
+            'items'  => $itemsNubeFact,
+        ]), $tipoComprobanteSunat);
+
+        if (!$resultadoSunat['success']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo emitir el comprobante ante SUNAT: ' . $resultadoSunat['message'],
+            ], 422);
+        }
+
         // Para tarjeta no hay vuelto: se cobra el monto exacto
         $montoCobrado = $request->metodo === 'efectivo' ? $request->monto_recibido : $total;
         $vuelto       = $request->metodo === 'efectivo' ? max(0, $request->monto_recibido - $total) : 0;
@@ -214,8 +319,26 @@ class CajaController extends Controller
         $comprobanteIdRef = null;
 
         DB::transaction(function () use (
-            $request, $restauranteId, $usuarioId, $pedidos, $pedidoIds, $mesaId,
-            $serie, $subtotal, $igv, $total, $montoCobrado, $vuelto, $caja, $culqiChargeId, &$comprobanteIdRef
+            $request,
+            $restauranteId,
+            $usuarioId,
+            $pedidos,
+            $pedidoIds,
+            $mesaId,
+            $serie,
+            $subtotal,
+            $igv,
+            $total,
+            $montoCobrado,
+            $vuelto,
+            $caja,
+            $culqiChargeId,
+            $sunatSerie,
+            $siguienteNumeroSunat,
+            $resultadoSunat,
+            $clienteNombre,
+            $clienteRuc,
+            &$comprobanteIdRef
         ) {
             $comprobanteId = DB::table('comprobante')->insertGetId([
                 'restaurante_id'     => $restauranteId,
@@ -223,13 +346,18 @@ class CajaController extends Controller
                 'serie_id'           => $serie->id,
                 'tipo'               => $request->tipo,
                 'numero_correlativo' => $serie->correlativo_actual,
-                'cliente_nombre'     => $request->cliente_nombre ?? 'Cliente',
-                'cliente_ruc'        => $request->cliente_ruc,
+                'cliente_nombre'     => $clienteNombre,
+                'cliente_ruc'        => $clienteRuc,
                 'subtotal'           => $subtotal,
                 'igv'                => $igv,
                 'total'              => $total,
                 'anulado'            => false,
                 'emitido_at'         => now(),
+                'sunat_serie'        => $sunatSerie,
+                'sunat_numero'       => $siguienteNumeroSunat,
+                'sunat_enlace_pdf'   => $resultadoSunat['data']['enlace_del_pdf'] ?? null,
+                'sunat_enlace_xml'   => $resultadoSunat['data']['enlace_del_xml'] ?? null,
+                'sunat_estado'       => 'enviado',
             ]);
 
             $comprobanteIdRef = $comprobanteId;
@@ -263,11 +391,56 @@ class CajaController extends Controller
             }
         });
 
+        // ── Imprimir el ticket físico (NO bloquea la venta si falla) ──
+        $mensajeImpresion = '';
+
+        try {
+            $impresoraService = app(ImpresoraTicketService::class);
+            $restaurante = DB::table('restaurante')->where('id', $restauranteId)->first();
+
+            $mesaNumero = $mesaId ? DB::table('mesa')->where('id', $mesaId)->value('numero') : null;
+
+            $itemsImpresion = $detallesPedido->map(function ($d) {
+                return [
+                    'cantidad'        => (float) $d->cantidad,
+                    'descripcion'     => $d->producto_nombre,
+                    'precio_unitario' => (float) $d->precio_unitario,
+                    'total'           => (float) $d->precio_unitario * (float) $d->cantidad,
+                ];
+            })->toArray();
+
+            $resultadoImpresion = $impresoraService->imprimirTicketDoble([
+                'restaurante'       => $restaurante->nombre ?? 'Restaurante',
+                'direccion'         => $restaurante->direccion ?? '',
+                'ruc'               => $restaurante->ruc ?? '',
+                'tipo'              => $request->tipo,
+                'numero_completo'   => $serie->serie . '-' . str_pad($serie->correlativo_actual, 6, '0', STR_PAD_LEFT),
+                'fecha'             => now()->format('d/m/Y H:i A'),
+                'mesa'              => $mesaNumero,
+                'items'             => $itemsImpresion,
+                'subtotal'          => $subtotal,
+                'igv'               => $igv,
+                'total'             => $total,
+                'cliente_nombre'    => $clienteNombre,
+                'cliente_documento' => $clienteRuc,
+                'metodo_pago'       => $request->metodo,
+                'monto_pagado'      => $montoCobrado,
+                'vuelto'            => $vuelto,
+            ]);
+
+            if (!$resultadoImpresion['success']) {
+                $mensajeImpresion = ' (Aviso: no se pudo imprimir el ticket físico — ' . $resultadoImpresion['message'] . ')';
+            }
+        } catch (\Throwable $e) {
+            $mensajeImpresion = ' (Aviso: no se pudo imprimir el ticket físico)';
+        }
+
         return response()->json([
-            'success'        => true,
-            'comprobante_id' => $comprobanteIdRef,
-            'vuelto'         => number_format($vuelto, 2),
-            'message'        => ucfirst($request->tipo) . " emitida correctamente. Vuelto: S/ " . number_format($vuelto, 2),
+            'success'          => true,
+            'comprobante_id'   => $comprobanteIdRef,
+            'vuelto'           => number_format($vuelto, 2),
+            'enlace_pdf_sunat' => $resultadoSunat['data']['enlace_del_pdf'] ?? null,
+            'message'          => ucfirst($request->tipo) . " emitida y enviada a SUNAT correctamente. Vuelto: S/ " . number_format($vuelto, 2) . $mensajeImpresion,
         ]);
     }
 

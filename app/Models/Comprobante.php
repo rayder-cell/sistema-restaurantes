@@ -21,6 +21,11 @@ class Comprobante extends Model
         'igv',
         'total',
         'anulado',
+        'sunat_serie',
+        'sunat_numero',
+        'sunat_enlace_pdf',
+        'sunat_enlace_xml',
+        'sunat_estado',
     ];
 
     protected $casts = [
@@ -29,6 +34,7 @@ class Comprobante extends Model
         'total'    => 'decimal:2',
         'anulado'  => 'boolean',
         'emitido_at' => 'datetime',
+        'sunat_numero' => 'integer',
     ];
 
     // ─── Relaciones ───────────────────────────────────────────
@@ -58,5 +64,14 @@ class Comprobante extends Model
     public function numeroCompleto(): string
     {
         return $this->serie->serie . '-' . str_pad($this->numero_correlativo, 8, '0', STR_PAD_LEFT);
+    }
+
+    public function numeroCompletoSunat(): ?string
+    {
+        if (!$this->sunat_serie || !$this->sunat_numero) {
+            return null;
+        }
+
+        return $this->sunat_serie . '-' . str_pad($this->sunat_numero, 6, '0', STR_PAD_LEFT);
     }
 }

@@ -4,15 +4,23 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class CulqiService
 {
-    protected string $secretKey;
+    protected ?string $secretKey;
     protected string $baseUrl = 'https://api.culqi.com/v2';
 
     public function __construct()
     {
-        $this->secretKey = config('culqi.secret_key');
+        $restauranteId = session('restaurante_id');
+
+        $llaveEncriptada = DB::table('restaurante')
+            ->where('id', $restauranteId)
+            ->value('culqi_secret_key');
+
+        $this->secretKey = $llaveEncriptada ? Crypt::decryptString($llaveEncriptada) : null;
     }
 
     /**
@@ -27,6 +35,15 @@ class CulqiService
      */
     public function crearCargo(string $token, float $monto, string $email, string $descripcion = 'Consumo restaurante'): array
     {
+        if (!$this->secretKey) {
+            return [
+                'success'   => false,
+                'charge_id' => null,
+                'message'   => 'Este restaurante no tiene configurado el cobro con tarjeta.',
+                'raw'       => [],
+            ];
+        }
+
         $montoCentimos = (int) round($monto * 100);
 
         try {

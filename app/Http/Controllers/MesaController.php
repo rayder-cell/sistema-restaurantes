@@ -7,6 +7,7 @@ use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MesaController extends Controller
 {
@@ -279,6 +280,7 @@ class MesaController extends Controller
                 'numero'     => $mesa->numero,
                 'capacidad'  => $mesa->capacidad,
                 'estado'     => $mesa->estado,
+                'qr_token'   => $mesa->qr_token,
                 'esMia'      => $esMia,
                 'detalles'   => $detalles->map(fn($d) => [
                     'detalle_id'      => $d->detalle_id,
@@ -297,5 +299,21 @@ class MesaController extends Controller
         ];
 
         return response()->json(['mesas' => $data, 'resumen' => $resumen]);
+    }
+
+    // ── Generar imagen PNG del código QR de la mesa (apunta al menú público) ──
+    public function qrImagen(Mesa $mesa)
+    {
+        $this->verificarRestaurante($mesa);
+
+        $url = url("/menu/{$mesa->qr_token}");
+
+        $imagen = QrCode::format('svg')
+            ->size(400)
+            ->margin(1)
+            ->errorCorrection('H')
+            ->generate($url);
+
+        return response($imagen)->header('Content-Type', 'image/svg+xml');
     }
 }
